@@ -1,0 +1,6 @@
+{
+	"name:": "PostItem",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./PostItem.js"
+}

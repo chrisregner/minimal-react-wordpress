@@ -1,0 +1,6 @@
+{
+	"name:": "GlobalStyles",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./GlobalStyles.js"
+}

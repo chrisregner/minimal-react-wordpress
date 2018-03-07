@@ -1,0 +1,112 @@
+import React from 'react'
+
+export const colorPrimary = '#000000'
+export const colorAlternate = '#ffffff'
+export const colorAccent = '#c06014'
+export const colorMuted = '#777777'
+
+export const bgColorPrimary = '#ffffff'
+export const bgColorAlternate = '#000000'
+export const bgColorSecondary = '#ededed'
+export const bgColorAccent = '#c06014'
+export const bgColorMuted = '#777777'
+
+export const fontTitle = '"Libre Baskerville", serif'
+export const fontCopy = 'Georgia, Times, "Times New Roman", serif'
+
+export const lineHeightTitle = 1.25
+export const lineHeightCopy = 1.5
+
+const GlobalStyles = () =>
+  <style jsx global>{`
+    {/* Base Styles */}
+    body {
+      background-color: ${bgColorPrimary};
+      font-family: ${fontCopy};
+      line-height: ${lineHeightCopy};
+      color: ${colorPrimary};
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      font-family: ${fontTitle};
+      font-weight: 700;
+      line-height: ${lineHeightTitle};
+    }
+
+    p { margin: 0 }
+    a { color: ${colorPrimary}; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    {/* Components */}
+
+    .button-primary,
+    .button-secondary {
+      display: inline-block;
+      border-style: solid;
+      border-width: 2px;
+      padding: .5rem 1rem;
+      font-family: ${fontTitle};
+      font-size:.875rem;
+      line-height: 1;
+      letter-spacing:.15em;
+      text-transform: uppercase;
+      transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+
+    .button-primary {
+      border-color: ${colorAccent};
+      color: ${colorAccent};
+      font-weight: 700;
+    }
+
+    .button-secondary {
+      border-color: ${colorPrimary};
+      background-color: ${bgColorAlternate};
+      color: ${colorAlternate};
+      font-weight: 500;
+    }
+
+    .button-primary:hover {
+      background-color: ${bgColorAccent};
+      color: ${colorAlternate};
+    }
+
+    .button-secondary:hover {
+      background-color: transparent;
+      color: ${colorPrimary};
+      font-weight: 500;
+    }
+
+    {/* Utility Styles */}
+    .font-title { font-family: ${fontTitle}; }
+    .font-copy { font-family: ${fontCopy}; }
+
+    .color-primary { color: ${colorPrimary}; }
+    .color-accent { color: ${colorAccent}; }
+    .color-muted { color: ${colorMuted}; }
+
+    .bg-color-primary { background-color: ${bgColorPrimary}; }
+    .bg-color-secondary { background-color: ${bgColorSecondary}; }
+    .bg-color-accent { background-color: ${bgColorAccent}; }
+    .bg-color-muted { background-color: ${bgColorMuted}; }
+
+    .border-color-accent { border-color: ${colorAccent}; }
+
+    .c-bw1 { border-width: 1px; }
+    .c-bw2 { border-width: 2px; }
+    .c-bw3 { border-width: 3px; }
+
+    .shadow-hover-1,
+    .shadow-hover-2 {
+      transition: box-shadow 0.2s ease-in-out;
+    }
+
+    .shadow-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+    .shadow-2 { box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); }
+
+    .shadow-hover-1:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+    .shadow-hover-2:hover { box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); }
+  `}</style>
+
+export default GlobalStyles
