@@ -2,28 +2,28 @@ import React from 'react'
 
 const PostItem = ({ hasImage = true }) =>
   <section className="pb5">
-    <div className="nl6 nr6">
-      {
-        hasImage
-        && <img
-            className="mb4 shadow-1 shadow-hover-2"
-            src="http://localhost/minimal-react-wordpress/wp-content/uploads/2018/01/web-agency-29200.jpg"
-            alt=""
-          />
-      }
-    </div>
+    {
+      hasImage &&
+      <div className="nl3 nr3 nl4-ns nr4-ns">
+        <img
+          className="mb4 shadow-1 shadow-hover-2"
+          src="http://localhost/minimal-react-wordpress/wp-content/uploads/2018/01/web-agency-29200.jpg"
+          alt=""
+        />
+      </div>
+    }
 
-    <div className="ph4">
-      <a href="">
-        <h2 className="pb2 f2">Lorem ipsum dolor sit amet, consectetur adipiscing!</h2>
+    <div className="ph3 ph4-ns">
+      <a href="" className="color-hover-muted">
+        <h2 className="pb3 pb2-ns f2">Lorem ipsum dolor sit amet, consectetur adipiscing!</h2>
       </a>
 
       <div className="pt1 pb2 f7 font-title color-muted tracked ttu">
         Updated Jan 21, 2018{
         }&ensp;<b>&middot;</b>&ensp;{
-        }<a href="" className="color-muted underline">Alpha</a>,&ensp;
-        <a href="" className="color-muted underline">Beta</a>,&ensp;
-        <a href="" className="color-muted underline">Gamma</a>
+        }<a href="" className="color-muted color-hover-primary underline">Alpha</a>,&ensp;
+        <a href="" className="color-muted color-hover-primary underline">Beta</a>,&ensp;
+        <a href="" className="color-muted color-hover-primary underline">Gamma</a>
       </div>
 
       <div className="pt1 pb4">
@@ -38,11 +38,11 @@ const PostItem = ({ hasImage = true }) =>
       <a href="" className="button-primary mb5">Read More</a>
 
       <div className="divider center w-third bg-color-muted"></div>
-
-      <style jsx>{`
-        .divider { height: 3px; }
-      `}</style>
     </div>
+
+    <style jsx>{`
+      .divider { height: 2px; }
+    `}</style>
   </section>
 
 export default PostItem

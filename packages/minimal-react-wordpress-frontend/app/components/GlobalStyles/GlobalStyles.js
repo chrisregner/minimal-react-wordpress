@@ -1,5 +1,9 @@
 import React from 'react'
 
+export const viewportNotSmall = 'screen and (min-width: 30em)'
+export const viewportMedium = 'screen and (min-width: 30em) and (max-width: 60em)'
+export const viewportLarge = 'screen and (min-width: 60em)'
+
 export const colorPrimary = '#000000'
 export const colorAlternate = '#ffffff'
 export const colorAccent = '#c06014'
@@ -20,7 +24,10 @@ export const lineHeightCopy = 1.5
 const GlobalStyles = () =>
   <style jsx global>{`
     {/* Base Styles */}
+    html { font-size: 14px; }
+
     body {
+      min-width: 300px;
       background-color: ${bgColorPrimary};
       font-family: ${fontCopy};
       line-height: ${lineHeightCopy};
@@ -38,6 +45,10 @@ const GlobalStyles = () =>
     a { color: ${colorPrimary}; text-decoration: none; }
     img { display: block; max-width: 100%; }
 
+    @media ${viewportNotSmall} {
+      html { font-size: 16px; }
+    }
+
     {/* Components */}
 
     .button-primary,
@@ -51,7 +62,7 @@ const GlobalStyles = () =>
       line-height: 1;
       letter-spacing:.15em;
       text-transform: uppercase;
-      transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+      transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
     }
 
     .button-primary {
@@ -86,6 +97,16 @@ const GlobalStyles = () =>
     .color-accent { color: ${colorAccent}; }
     .color-muted { color: ${colorMuted}; }
 
+    .color-hover-primary,
+    .color-hover-accent,
+    .color-hover-muted {
+      transition: color 0.15s ease-in-out;
+    }
+
+    .color-hover-primary:hover { color: ${colorPrimary}; }
+    .color-hover-accent:hover { color: ${colorAccent}; }
+    .color-hover-muted:hover { color: ${colorMuted}; }
+
     .bg-color-primary { background-color: ${bgColorPrimary}; }
     .bg-color-secondary { background-color: ${bgColorSecondary}; }
     .bg-color-accent { background-color: ${bgColorAccent}; }
@@ -99,7 +120,7 @@ const GlobalStyles = () =>
 
     .shadow-hover-1,
     .shadow-hover-2 {
-      transition: box-shadow 0.2s ease-in-out;
+      transition: box-shadow 0.15s ease-in-out;
     }
 
     .shadow-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
@@ -107,6 +128,12 @@ const GlobalStyles = () =>
 
     .shadow-hover-1:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
     .shadow-hover-2:hover { box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23); }
+
+    .zn-1 { z-index:-0; }
+    .zn-1 { z-index:-1; }
+    .zn-1 { z-index:-2; }
+    .zn-1 { z-index:-3; }
+    .zn-1 { z-index:-999; }
   `}</style>
 
 export default GlobalStyles

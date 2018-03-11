@@ -1,12 +1,25 @@
 import React from 'react'
 
-import { colorAccent } from 'app/components/GlobalStyles'
+import { viewportLarge } from 'app/components/GlobalStyles'
 
 const Nav = () =>
-  <nav className="font-title lh-solid ttu f6">
-    <a href="" className="mv2 pv1 db pl2 bl c-bw3 border-color-accent bl b tracked">His Thoughts</a>
-    <a href="" className="mv2 pv1 db color-muted">His Identity</a>
-    <a href="" className="mv2 pv1 db color-muted">His Whereabouts</a>
+  <nav className="font-title ph4 ph0-l lh-solid ttu f6 tc tl-l">
+    <a href="" className="mv1 pv1 dib db-l ph2 mh1 mh0-l pr0-l active pl2-l c-bw3 border-color-accent b tracked">His Thoughts</a>
+    <a href="" className="mv1 pv1 dib db-l ph2 mh1 mh0-l ph0-l color-muted color-hover-primary">His Identity</a>
+    <a href="" className="mv1 pv1 dib db-l ph2 mh1 mh0-l ph0-l color-muted color-hover-primary">His Whereabouts</a>
+
+    <style jsx>{`
+      .active {
+        border-bottom-style: solid;
+      }
+
+      @media ${viewportLarge} {
+        .active {
+          border-bottom-style: none;
+          border-left-style: solid;
+        }
+      }
+    `}</style>
   </nav>
 
 export default Nav
