@@ -4,7 +4,7 @@ const PostItem = ({ hasImage = true }) =>
   <section className="pb5">
     {
       hasImage &&
-      <div className="nl3 nr3 nl4-ns nr4-ns">
+      <div className="nl3 nr3 nl4-m nr4-m nl5-l nr5-l">
         <img
           className="mb4 shadow-1 shadow-hover-2"
           src="http://localhost/minimal-react-wordpress/wp-content/uploads/2018/01/web-agency-29200.jpg"
