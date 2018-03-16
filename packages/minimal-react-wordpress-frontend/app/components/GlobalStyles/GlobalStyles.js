@@ -89,6 +89,10 @@ const GlobalStyles = () =>
       font-weight: 500;
     }
 
+    .wp-content p:not(:last-child) {
+      padding-bottom: 1rem;
+    }
+
     {/* Utility Styles */}
     .font-title { font-family: ${fontTitle}; }
     .font-copy { font-family: ${fontCopy}; }
@@ -112,7 +116,7 @@ const GlobalStyles = () =>
     .bg-color-accent { background-color: ${bgColorAccent}; }
     .bg-color-muted { background-color: ${bgColorMuted}; }
 
-    .border-color-accent { border-color: ${colorAccent}; }
+    .b--accent { border-color: ${colorAccent}; }
 
     .c-bw1 { border-width: 1px; }
     .c-bw2 { border-width: 2px; }
@@ -134,6 +138,28 @@ const GlobalStyles = () =>
     .zn-1 { z-index:-2; }
     .zn-1 { z-index:-3; }
     .zn-1 { z-index:-999; }
+
+    {/*!
+    * animate.css -http://daneden.me/animate
+    * Version - 3.6.0
+    * Licensed under the MIT license - http://opensource.org/licenses/MIT
+    *
+    * Copyright (c) 2018 Daniel Eden
+    */}
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .fadeIn {
+      animation-name: fadeIn;
+    }
+
+    .animated {
+      animation-duration: 1s;
+      animation-fill-mode: both;
+    }
   `}</style>
 
 export default GlobalStyles

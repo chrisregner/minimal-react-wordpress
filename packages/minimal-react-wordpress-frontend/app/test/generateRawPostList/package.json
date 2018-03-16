@@ -1,0 +1,6 @@
+{
+	"name:": "generateRawPostList",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./generateRawPostList.js"
+}

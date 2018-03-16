@@ -1,6 +1,6 @@
 {
-	"name:": "state",
+	"name:": "rootReducer",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./state.js"
+	"main": "./rootReducer.js"
 }

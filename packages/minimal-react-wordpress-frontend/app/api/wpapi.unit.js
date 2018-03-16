@@ -1,4 +1,4 @@
-import { describe, before } from 'mocha'
+import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import td from 'testdouble'
 import axios from 'axios'
@@ -12,13 +12,17 @@ describe('api/wp-api', () => {
         const getTd = td.replace(axios, 'get')
         const expectedArgs = [
           'http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts',
-          { params: 'foo' },
+          {
+            params: {
+              _embed: 1,
+            },
+          },
         ]
 
         td.when(getTd(...expectedArgs))
-          .thenReturn('bar')
+          .thenReturn('foo')
 
-        assert.equal(wpFetchPostList('foo'), 'bar')
+        assert.equal(wpFetchPostList(), 'foo')
 
         td.reset()
       })
@@ -27,13 +31,18 @@ describe('api/wp-api', () => {
         const getTd = td.replace(axios, 'get')
         const expectedArgs = [
           'http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts',
-          { params: 'baz' },
+          {
+            params: {
+              _embed: 1,
+              foo: 'bar',
+            },
+          },
         ]
 
         td.when(getTd(...expectedArgs))
-          .thenReturn('ketchup')
+          .thenReturn('baz')
 
-        assert.equal(wpFetchPostList('baz'), 'ketchup')
+        assert.equal(wpFetchPostList({ foo: 'bar' }), 'baz')
 
         td.reset()
       })

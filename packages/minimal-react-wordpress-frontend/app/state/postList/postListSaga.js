@@ -1,15 +1,17 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, takeLatest, select } from 'redux-saga/effects'
 
-import { FETCH_POST_LIST } from 'app/state/actionTypes'
+import simplifyPostList from 'app/utils/simplifyPostList'
 import * as wpapi from 'app/api/wpapi'
-import { setPostList, setError } from './postListActions'
+import { getPage } from 'app/state'
+import { setPostList, addPostList, setError } from './postListReducer'
+import { FETCH_POST_LIST, FETCH_MORE_POST_LIST } from 'app/state/actionTypes'
 
-function* fetchUser(/*action*/) {
+function * fetchPostList () {
   try {
-    const { data, headers } = yield call(wpapi.wpFetchPostList/*, action.payload*/)
+    const { data, headers } = yield call(wpapi.wpFetchPostList)
 
     yield put(setPostList({
-      posts: data,
+      postList: simplifyPostList(data),
       totalPages: headers['x-wp-totalpages'],
     }))
   } catch (e) {
@@ -17,6 +19,21 @@ function* fetchUser(/*action*/) {
   }
 }
 
-export default function* postListSaga() {
-  yield takeEvery(FETCH_POST_LIST, fetchUser)
+function * fetchMorePostList () {
+  try {
+    const page = yield select(getPage)
+    const { data, headers } = yield call(wpapi.wpFetchPostList, { page })
+
+    yield put(addPostList({
+      postList: simplifyPostList(data),
+      totalPages: headers['x-wp-totalpages'],
+    }))
+  } catch (e) {
+    yield put(setError(e))
+  }
+}
+
+export default function * postListSaga () {
+  yield takeLatest(FETCH_POST_LIST, fetchPostList)
+  yield takeLatest(FETCH_MORE_POST_LIST, fetchMorePostList)
 }

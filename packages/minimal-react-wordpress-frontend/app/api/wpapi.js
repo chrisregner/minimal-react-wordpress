@@ -1,4 +1,12 @@
 import axios from 'axios'
 
 export const wpFetchPostList = (params = {}) =>
-  axios.get('http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts', { params })
+  axios.get(
+    'http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts',
+    {
+      params: {
+        ...params,
+        _embed: 1,
+      },
+    },
+  )

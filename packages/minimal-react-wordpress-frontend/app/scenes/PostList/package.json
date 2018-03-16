@@ -1,6 +1,6 @@
 {
-	"name:": "PostList",
+	"name:": "PostListContainer",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./PostList.js"
+	"main": "./PostListContainer.js"
 }

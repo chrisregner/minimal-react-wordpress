@@ -1,48 +1,79 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
-const PostItem = ({ hasImage = true }) =>
-  <section className="pb5">
-    {
-      hasImage &&
-      <div className="nl3 nr3 nl4-m nr4-m nl5-l nr5-l">
+import sanitize from 'app/utils/sanitizeDom'
+import format from 'date-fns/format'
+
+const createImageProps = ({ mediumLargeSrc, largeSrc, fullSrc, altText }) => {
+  let srcSet = ''
+
+  if (mediumLargeSrc) srcSet += (mediumLargeSrc + ' 768w')
+  if (largeSrc) srcSet += (',' + largeSrc + ' 1024w')
+  if (!largeSrc && mediumLargeSrc && fullSrc) srcSet += ',' + fullSrc + ' 1024w'
+
+  return {
+    src: largeSrc || fullSrc,
+    alt: altText,
+    srcSet,
+  }
+}
+
+const PostItem = ({ id, title, excerpt, modified, date, featuredMedia }) => {
+  const imageProps = featuredMedia && createImageProps(featuredMedia)
+
+  return <section className='pb5'>
+    {featuredMedia &&
+      <Link data-test='post-link' to={`/post/${id}`} className='db nl3 nr3 nl4-m nr4-m nl5-l nr5-l'>
         <img
-          className="mb4 shadow-1 shadow-hover-2"
-          src="http://localhost/minimal-react-wordpress/wp-content/uploads/2018/01/web-agency-29200.jpg"
-          alt=""
+          data-test='featured-media'
+          className='mb4 shadow-1 shadow-hover-2'
+          sizes='100%'
+          {...imageProps}
         />
-      </div>
-    }
+      </Link>}
 
-    <div className="ph3 ph4-ns">
-      <a href="" className="color-hover-muted">
-        <h2 className="pb3 pb2-ns f2">Lorem ipsum dolor sit amet, consectetur adipiscing!</h2>
-      </a>
+    <div className='ph3 ph4-ns'>
+      <Link data-test='post-link' to={`/post/${id}`} className='color-hover-muted'>
+        <h2 data-test='title' className='mb3 mb2-ns f2' dangerouslySetInnerHTML={{ __html: sanitize(title) }} />
+      </Link>
 
-      <div className="pt1 pb2 f7 font-title color-muted tracked ttu">
-        Updated Jan 21, 2018{
-        }&ensp;<b>&middot;</b>&ensp;{
-        }<a href="" className="color-muted color-hover-primary underline">Alpha</a>,&ensp;
-        <a href="" className="color-muted color-hover-primary underline">Beta</a>,&ensp;
-        <a href="" className="color-muted color-hover-primary underline">Gamma</a>
-      </div>
-
-      <div className="pt1 pb4">
-        <p className="pb3">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto neque facilis quisquam ratione fugiat ipsum corrupti doloribus sint sequi!
-        </p>
-        <p>
-          Recusandae vitae in deserunt rem atque nihil deleniti sapiente maxime sint! Non voluptas eaque accusamus quod sit minus sapiente debitis tempore iste recusandae nihil expedita obcaecati saepe asperiores inventore, veniam distinctio eligendi cupiditate praesentium fugiat! Facere quae commodi suscipit voluptatem odio.
-        </p>
+      <div className='pt1 pb2 f7 font-title color-muted tracked ttu'>
+        <span data-test='date'>
+          {modified ? 'updated' : 'created'}&ensp;
+          {format(modified || date, 'MMM D, YYYY')}
+        </span>
+        &ensp;<b>&middot;</b>&ensp;
+        <a href='' className='color-muted color-hover-primary underline'>Alpha</a>,&ensp;
+        <a href='' className='color-muted color-hover-primary underline'>Beta</a>,&ensp;
+        <a href='' className='color-muted color-hover-primary underline'>Gamma</a>
       </div>
 
-      <a href="" className="button-primary mb5">Read More</a>
+      <div data-test='excerpt' className='wp-content pt1 pb4' dangerouslySetInnerHTML={{ __html: sanitize(excerpt) }} />
 
-      <div className="divider center w-third bg-color-muted"></div>
+      <Link data-test='post-link' to={`/post/${id}`} className='button-primary mb5'>Read More</Link>
+
+      <div className='divider center w-third bg-color-muted' />
     </div>
 
     <style jsx>{`
       .divider { height: 2px; }
     `}</style>
   </section>
+}
+
+PostItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  excerpt: PropTypes.string.isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
+  modified: PropTypes.instanceOf(Date),
+  featuredMedia: PropTypes.shape({
+    altText: PropTypes.string.isRequired,
+    fullSrc: PropTypes.string.isRequired,
+    mediumLargeSrc: PropTypes.string,
+    largeSrc: PropTypes.string,
+  }),
+}
 
 export default PostItem

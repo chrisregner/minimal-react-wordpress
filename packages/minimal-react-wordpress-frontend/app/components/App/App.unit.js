@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe } from 'mocha'
+import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import { shallow } from 'enzyme'
 

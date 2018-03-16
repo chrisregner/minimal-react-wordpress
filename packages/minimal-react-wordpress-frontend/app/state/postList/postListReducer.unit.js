@@ -1,14 +1,22 @@
-import { describe } from 'mocha'
+import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import { call } from 'ramda'
+import call from 'ramda/src/call'
 
-import postListReducer from './postListReducer'
-import * as actions from './postListActions'
+import postListReducer, {
+  fetchPostList,
+  fetchMorePostList,
+  setPostList,
+  addPostList,
+  setError,
+  getPostList,
+  getIsLoading,
+  getError,
+  getPage,
+  getIsThereMorePost,
+} from './postListReducer'
 
 describe('state/postListReducer', () => {
   describe('fetchPostList()', () => {
-    const { fetchPostList } = actions
-
     it('should set page to 1', () => {
       const actual = postListReducer({}, fetchPostList()).page
       assert.equal(actual, 1)
@@ -21,8 +29,6 @@ describe('state/postListReducer', () => {
   })
 
   describe('fetchMorePostList()', () => {
-    const { fetchMorePostList } = actions
-
     it('should increment page by 1', () => {
       call(() => {
         const initialState = { page: 1 }
@@ -38,8 +44,6 @@ describe('state/postListReducer', () => {
     })
 
     it('should set isLoading to true', () => {
-      const { fetchMorePostList } = actions
-
       call(() => {
         const initialState = { page: 1, isLoading: false }
         const actual = postListReducer(initialState, fetchMorePostList()).isLoading
@@ -49,32 +53,30 @@ describe('state/postListReducer', () => {
       call(() => {
         const initialState = { page: 10, isLoading: true }
         const actual = postListReducer(initialState, fetchMorePostList()).isLoading
-        assert.isTrue(actual,)
+        assert.isTrue(actual)
       })
     })
   })
 
-  const makeSamplePayload = (payloadPart) => ({
-    posts: [],
+  const makeSamplePayload = payloadPart => ({
+    postList: [],
     totalPages: 0,
-    ...payloadPart
+    ...payloadPart,
   })
 
   describe('setPostList()', () => {
-    const { setPostList } = actions
-
-    it('should set posts', () => {
+    it('should set postList', () => {
       call(() => {
         const initialState = {}
-        const payload = makeSamplePayload({ posts: ['foo'] })
-        const actual = postListReducer(initialState, setPostList(payload)).posts
+        const payload = makeSamplePayload({ postList: ['foo'] })
+        const actual = postListReducer(initialState, setPostList(payload)).postList
         assert.deepEqual(actual, ['foo'])
       })
 
       call(() => {
-        const initialState = { posts: ['bar'] }
-        const payload = makeSamplePayload({ posts: ['baz'] })
-        const actual = postListReducer(initialState, setPostList(payload)).posts
+        const initialState = { postList: ['bar'] }
+        const payload = makeSamplePayload({ postList: ['baz'] })
+        const actual = postListReducer(initialState, setPostList(payload)).postList
         assert.deepEqual(actual, ['baz'])
       })
     })
@@ -115,22 +117,21 @@ describe('state/postListReducer', () => {
   })
 
   describe('addPostList()', () => {
-    const { addPostList } = actions
-    const makeSampleInitState = (initStatePart) => ({ posts: [], ...initStatePart })
+    const makeSampleInitState = initStatePart => ({ postList: [], ...initStatePart })
 
-    it('should set posts', () => {
+    it('should add postList to existing ones', () => {
       call(() => {
-        const initialState = { posts: ['foo', 'bar'] }
-        const payload = makeSamplePayload({ posts: ['baz', 'ketchup'] })
-        const actual = postListReducer(initialState, addPostList(payload)).posts
-        assert.deepEqual(actual,  ['foo', 'bar', 'baz', 'ketchup'])
+        const initialState = { postList: ['foo', 'bar'] }
+        const payload = makeSamplePayload({ postList: ['baz', 'ketchup'] })
+        const actual = postListReducer(initialState, addPostList(payload)).postList
+        assert.deepEqual(actual, ['foo', 'bar', 'baz', 'ketchup'])
       })
 
       call(() => {
-        const initialState = { posts: ['baz', 'ketchup'] }
-        const payload = makeSamplePayload({ posts: ['cats', 'dragons'] })
-        const actual = postListReducer(initialState, addPostList(payload)).posts
-        assert.deepEqual(actual,  ['baz', 'ketchup', 'cats', 'dragons'])
+        const initialState = { postList: ['baz', 'ketchup'] }
+        const payload = makeSamplePayload({ postList: ['cats', 'dragons'] })
+        const actual = postListReducer(initialState, addPostList(payload)).postList
+        assert.deepEqual(actual, ['baz', 'ketchup', 'cats', 'dragons'])
       })
     })
 
@@ -171,8 +172,6 @@ describe('state/postListReducer', () => {
 
   describe('setError()', () => {
     it('should set the error', () => {
-      const { setError } = actions
-
       call(() => {
         const initialState = {}
         const payload = new Error('foo')
@@ -186,6 +185,142 @@ describe('state/postListReducer', () => {
         const actual = postListReducer(initialState, setError(payload)).error
         assert.deepEqual(actual, payload)
       })
+    })
+
+    it('should set isLoading to false', () => {
+      call(() => {
+        const initialState = { isLoading: true }
+        const payload = new Error('foo')
+        const actual = postListReducer(initialState, setError(payload)).isLoading
+        assert.isFalse(actual)
+      })
+
+      call(() => {
+        const initialState = { isLoading: true, error: new Error('bar') }
+        const payload = new Error('baz')
+        const actual = postListReducer(initialState, setError(payload)).isLoading
+        assert.isFalse(actual)
+      })
+    })
+  })
+})
+
+describe('state/postList/selectors', () => {
+  describe('getPostList()', () => {
+    it('should work', () => {
+      assert.equal(
+        getPostList({
+          postList: 'foo',
+          someOtherState: 'bar',
+        }),
+        'foo',
+      )
+
+      assert.equal(
+        getPostList({
+          postList: 'baz',
+          someOtherState: 'ketchup',
+        }),
+        'baz',
+      )
+    })
+  })
+
+  describe('getIsLoading()', () => {
+    it('should work', () => {
+      assert.equal(
+        getIsLoading({
+          isLoading: 'foo',
+          someOtherState: 'bar',
+        }),
+        'foo',
+      )
+
+      assert.equal(
+        getIsLoading({
+          isLoading: 'baz',
+          someOtherState: 'ketchup',
+        }),
+        'baz',
+      )
+    })
+  })
+
+  describe('getError()', () => {
+    it('should work', () => {
+      assert.equal(
+        getError({
+          error: 'foo',
+          someOtherState: 'bar',
+        }),
+        'foo',
+      )
+
+      assert.equal(
+        getError({
+          error: 'baz',
+          someOtherState: 'ketchup',
+        }),
+        'baz',
+      )
+    })
+  })
+
+  describe('getPage()', () => {
+    it('should work', () => {
+      assert.equal(
+        getPage({
+          page: 'foo',
+          someOtherState: 'bar',
+        }),
+        'foo',
+      )
+
+      assert.equal(
+        getPage({
+          page: 'baz',
+          someOtherState: 'ketchup',
+        }),
+        'baz',
+      )
+    })
+  })
+
+  describe('getIsThereMorePost()', () => {
+    it('should return true when page is lower than total pages', () => {
+      assert.isTrue(
+        getIsThereMorePost({
+          page: 1,
+          totalPages: 2,
+          someOtherState: 'bar',
+        }),
+      )
+
+      assert.isTrue(
+        getIsThereMorePost({
+          page: 5,
+          totalPages: 10,
+          someOtherState: 'ketchup',
+        }),
+      )
+    })
+
+    it('should return false when page is equal to the total pages', () => {
+      assert.isFalse(
+        getIsThereMorePost({
+          page: 1,
+          totalPages: 1,
+          someOtherState: 'bar',
+        }),
+      )
+
+      assert.isFalse(
+        getIsThereMorePost({
+          page: 10,
+          totalPages: 10,
+          someOtherState: 'ketchup',
+        }),
+      )
     })
   })
 })

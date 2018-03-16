@@ -1,0 +1,6 @@
+{
+  "name:": "testSubComponents",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./testSubComponents.js"
+}
