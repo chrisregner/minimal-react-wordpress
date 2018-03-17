@@ -8,8 +8,8 @@
     "mocha": "mocha --require babel-register --require setup-test.js --require babel-polyfill",
     "test": "cross-env BABEL_ENV=test yarn mocha --reporter spec --watch app/**/*.unit.js",
     "lint": "yarn lint-src && yarn lint-test",
-    "lint-src": "eslint --ignore-pattern \"**/*.unit.js\" --ignore-pattern \"dist/**\" **/*.js",
-    "lint-test": "eslint \"**/*.unit.js\""
+    "lint-src": "eslint --ignore-pattern \"**/*.unit.js\" --ignore-pattern \"dist/**\" **/*.js --fix",
+    "lint-test": "eslint \"**/*.unit.js\" --fix"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",
