@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import { lifecycle, compose } from 'recompose'
 
-import PostList from 'app/components/PostList'
 import { fetchPostList, fetchMorePostList } from 'app/state/postList'
+import PostList from './PostList'
 import {
   getPostList,
   getError,

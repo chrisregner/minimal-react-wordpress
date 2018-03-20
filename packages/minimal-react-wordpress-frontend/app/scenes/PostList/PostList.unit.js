@@ -10,7 +10,7 @@ import {
 import PostItem from './components/PostItem'
 import PostList from './PostList'
 
-describe('components/PostList', () => {
+describe('scenes/PostList/PostListComponent', () => {
   let setup, loadMoreTd
 
   before(() => {

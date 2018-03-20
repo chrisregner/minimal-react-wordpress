@@ -15,7 +15,11 @@ import postListReducer, {
   getIsThereMorePost,
 } from './postListReducer'
 
-describe('state/postListReducer', () => {
+describe('state/postList/reducer', () => {
+  it('should return the correct default state', () => {
+    assert.deepEqual(postListReducer(undefined, {}), {})
+  })
+
   describe('fetchPostList()', () => {
     it('should set page to 1', () => {
       const actual = postListReducer({}, fetchPostList()).page

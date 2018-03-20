@@ -3,10 +3,10 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import { shallow } from 'enzyme'
 
-import SearchBar from './SearchBar'
+import CloseIcon from './CloseIcon'
 
-describe('components/SearchBar', () => {
+describe('scenes/Search/containers/SearchBar/components/CloseIcon', () => {
   it('should render without crashing', () => {
-    assert.isTrue(shallow(<SearchBar />).exists())
+    assert.isTrue(shallow(<CloseIcon />).exists())
   })
 })

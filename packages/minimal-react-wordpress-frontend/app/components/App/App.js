@@ -6,7 +6,7 @@ import PostList from 'app/scenes/PostList'
 
 const App = () =>
   <div className='cf'>
-    <div className='header-wrapper fixed-l mh3 mh4-m mh0-l pl4-l pt6-l pb4 pb0-l w-third-l'>
+    <div className='header-wrapper fixed-l mh3 mh4-m mh0-l pl4-l pt6-l pb3 pb0-l w-third-l'>
       <Header />
     </div>
     <div className='fr-l pr4-l w-two-thirds-l'>

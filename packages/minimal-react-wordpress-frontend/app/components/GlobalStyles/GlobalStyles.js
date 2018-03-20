@@ -95,6 +95,9 @@ const GlobalStyles = () =>
       padding-bottom: 1rem;
     }
 
+    .button-icon-primary svg { fill: ${colorMuted}; transition: fill 0.15s ease-in-out; }
+    .button-icon-primary:hover svg, .button-icon-primary:focus svg { fill: ${colorPrimary}; }
+
     {/* Utility Styles */}
     .font-title { font-family: ${fontTitle}; }
     .font-copy { font-family: ${fontCopy}; }
@@ -153,9 +156,7 @@ const GlobalStyles = () =>
     .zn-1 { z-index:-3; }
     .zn-1 { z-index:-999; }
 
-    .transition-all {
-      transition: all 0.15s ease-in-out !important;
-    }
+    .transition-all { transition: all 0.15s ease-in-out !important; }
 
     {/*!
     * animate.css -http://daneden.me/animate

@@ -3,10 +3,10 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import { shallow } from 'enzyme'
 
-import TagCloud from './TagCloud'
+import SearchIcon from './SearchIcon'
 
-describe('components/TagCloud', () => {
+describe('scenes/ShowSearch/components/SearchIcon', () => {
   it('should render without crashing', () => {
-    assert.isTrue(shallow(<TagCloud />).exists())
+    assert.isTrue(shallow(<SearchIcon />).exists())
   })
 })

@@ -16,7 +16,7 @@ import {
   setError,
 } from './postListReducer'
 
-describe('state/postListSaga', () => {
+describe.skip('state/postListSaga', () => {
   describe('FETCH_POST_LIST', () => {
     it('should call SET_POST_LIST with simplified posts and other data on success (#1)', () => {
       const fakePosts = generateRawPostList(10)

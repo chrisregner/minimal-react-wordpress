@@ -2,5 +2,5 @@
   "name:": "SearchBar",
   "version": "0.0.0",
   "private": true,
-  "main": "./SearchBar.js"
+  "main": "./SearchBarContainer.js"
 }
