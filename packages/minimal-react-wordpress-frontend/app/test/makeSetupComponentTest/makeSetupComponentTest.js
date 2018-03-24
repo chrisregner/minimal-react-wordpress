@@ -3,8 +3,8 @@ import { shallow, mount } from 'enzyme'
 import mergeDeepRight from 'ramda/src/mergeDeepRight'
 
 const makeSetupComponentTest = (defaultOpts = {}) => (opts = {}) => {
-  const { Component, isMount, props } = mergeDeepRight(defaultOpts, opts)
-  const renderer = isMount ? mount : shallow
+  const { Component, useMount, props } = mergeDeepRight(defaultOpts, opts)
+  const renderer = useMount ? mount : shallow
 
   return renderer(<Component {...props} />)
 }

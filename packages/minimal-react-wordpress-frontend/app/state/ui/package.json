@@ -1,6 +1,6 @@
 {
-  "name:": "uiReducer",
+  "name:": "ui",
   "version": "0.0.0",
   "private": true,
-  "main": "./uiReducer.js"
+  "main": "./ui.js"
 }

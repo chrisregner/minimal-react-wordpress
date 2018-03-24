@@ -10,12 +10,14 @@ const rootReducer = combineReducers({
 
 // postList selectors
 export const getPostList = ({ page }) => fromPostList.getPostList(page)
-export const getIsLoading = ({ page }) => fromPostList.getIsLoading(page)
 export const getError = ({ page }) => fromPostList.getError(page)
 export const getPage = ({ page }) => fromPostList.getPage(page)
-export const getIsThereMorePost = ({ page }) => fromPostList.getIsThereMorePost(page)
+export const getSearchKeyword = ({ page }) => fromPostList.getSearchKeyword(page)
+export const getSearchTags = ({ page }) => fromPostList.getSearchTags(page)
+export const getStatus = ({ page }) => fromPostList.getStatus(page)
 
 // ui selectors
 export const getIsSearchVisible = ({ ui }) => fromUi.getIsSearchVisible(ui)
+export const getIsSearchAnimationDone = ({ ui }) => fromUi.getIsSearchAnimationDone(ui)
 
 export default rootReducer

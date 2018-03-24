@@ -1,6 +1,6 @@
 {
-	"name:": "rootReducer",
+	"name:": "reducer",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./rootReducer.js"
+	"main": "./reducer.js"
 }

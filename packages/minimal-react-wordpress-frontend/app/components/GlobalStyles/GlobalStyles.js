@@ -44,6 +44,7 @@ const GlobalStyles = () =>
     p { margin: 0 }
     a { color: ${colorPrimary}; text-decoration: none; }
     img { display: block; max-width: 100%; }
+    pre { margin: 0 }
 
     @media ${viewportNotSmall} {
       html { font-size: 16px; }

@@ -1,26 +1,25 @@
 import { connect } from 'react-redux'
-import { lifecycle, compose } from 'recompose'
+import { lifecycle, setDisplayName, compose } from 'recompose'
 
 import { fetchPostList, fetchMorePostList } from 'app/state/postList'
 import PostList from './PostList'
 import {
   getPostList,
   getError,
-  getIsLoading,
-  getIsThereMorePost,
+  getStatus,
 } from 'app/state'
 
 const enhance = compose(
+  setDisplayName('PostListContainer'),
   connect(
     state => ({
       postList: getPostList(state),
       error: getError(state),
-      isLoading: getIsLoading(state),
-      isThereMorePost: getIsThereMorePost(state),
+      status: getStatus(state),
     }),
-    dispatch => ({
-      fetchPostList: () => dispatch(fetchPostList()),
-      loadMore: () => dispatch(fetchMorePostList()),
+    ({
+      loadMore: fetchMorePostList,
+      fetchPostList,
     })
   ),
   lifecycle({

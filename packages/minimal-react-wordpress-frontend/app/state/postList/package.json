@@ -1,6 +1,6 @@
 {
-  "name:": "postListReducer",
+  "name:": "postList",
   "version": "0.0.0",
   "private": true,
-  "main": "./postListReducer.js"
+  "main": "./postList.js"
 }

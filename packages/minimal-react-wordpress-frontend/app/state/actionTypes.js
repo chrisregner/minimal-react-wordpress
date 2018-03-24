@@ -1,8 +1,10 @@
 export const FETCH_POST_LIST = 'postList/FETCH_POST_LIST'
 export const FETCH_MORE_POST_LIST = 'postList/FETCH_MORE_POST_LIST'
-export const SET_POST_LIST = 'postList/SET_POST_LIST'
+export const SET_SEARCH_KEYWORD = 'postList/SET_SEARCH_KEYWORD'
+export const ADD_SEARCH_TAG = 'postList/ADD_SEARCH_TAG'
+export const REMOVE_SEARCH_TAG = 'postList/REMOVE_SEARCH_TAG'
 export const ADD_POST_LIST = 'postList/ADD_POST_LIST'
 export const SET_ERROR = 'postList/SET_ERROR'
 
-export const SHOW_SEARCH = 'ui/SHOW_SEARCH'
-export const HIDE_SEARCH = 'ui/HIDE_SEARCH'
+export const TOGGLE_SEARCH = 'ui/TOGGLE_SEARCH'
+export const FLAG_SEARCH_ANIMATION_END = 'ui/FLAG_SEARCH_ANIMATION_END'

@@ -7,22 +7,22 @@ import {
 } from 'app/test'
 
 describe('scenes/ShowSearch/ShowSearchComponent', () => {
-  let setup, showSearchTd
+  let setup, toggleSearchTd
 
   before(() => {
-    showSearchTd = td.func()
+    toggleSearchTd = td.func()
     setup = makeSetupComponentTest({
       Component: ShowSearch,
-      props: { showSearch: showSearchTd },
+      props: { toggleSearch: toggleSearchTd },
     })
   })
 
   afterEach(td.reset)
 
-  it('should call showSearch() when "show search" button is clicked', () => {
-    const showSearchBtn = find(setup(), 'show-search-btn')
-    td.verify(showSearchTd(), { times: 0, ignoreExtraArgs: true })
-    showSearchBtn.simulate('click')
-    td.verify(showSearchTd())
+  it('should call toggleSearch() when "show search" button is clicked', () => {
+    const toggleSearchBtn = find(setup(), 'show-search-btn')
+    td.verify(toggleSearchTd(), { times: 0, ignoreExtraArgs: true })
+    toggleSearchBtn.simulate('click')
+    td.verify(toggleSearchTd())
   })
 })

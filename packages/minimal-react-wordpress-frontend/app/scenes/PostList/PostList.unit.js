@@ -6,6 +6,7 @@ import {
   makeSetupComponentTest,
   generatePostList,
   testSubComponents,
+  findTestComponent as find,
 } from 'app/test'
 import PostItem from './components/PostItem'
 import PostList from './PostList'
@@ -17,94 +18,147 @@ describe('scenes/PostList/PostListComponent', () => {
     loadMoreTd = td.func()
     setup = makeSetupComponentTest({
       Component: PostList,
-      props: {
-        isLoading: false,
-        loadMore: loadMoreTd,
-      },
+      props: { loadMore: loadMoreTd },
     })
   })
 
-  afterEach(() => {
-    td.reset()
-  })
+  afterEach(td.reset)
 
-  it('should render the correct components, when there is NO error', () => {
+  it('should render post list when there are posts', () => {
     const postList = generatePostList()
-    const wrapper = setup({ props: { postList } })
+    const postItems = find(setup({ props: { postList } }), 'post-item')
 
-    testSubComponents(wrapper, {
-      'post-item': [10, (postItems) => {
-        postItems.forEach((postItem, i) => {
-          assert.include(
-            postItem.props(),
-            postList[i],
-            'post-item should have the correct props'
-          )
+    postItems.forEach((postItem, i) => {
+      assert.include(
+        postItem.props(),
+        postList[i],
+        'post-item should have the correct props'
+      )
 
-          assert.isTrue(
-            postItem.is(PostItem),
-            'post-item should be the correct component'
-          )
-        })
-      }],
-      'load-more-btn': [1, (loadMoreBtn) => {
-        assert.equal(td.explain(loadMoreTd).callCount, 0, 'loadMore() should not be called by default')
-        loadMoreBtn.simulate('click')
-        td.verify(loadMoreTd())
-      }],
-      'error': 0,
-      'loader': 0,
-      'no-more-post': 0,
+      assert.isTrue(
+        postItem.is(PostItem),
+        'post-item should be the correct component'
+      )
     })
   })
-
-  it('should render the correct components, when there is error', () => {
-    const props = { error: new Error('foobar') }
+  it('should render the correct component when status is "loading"', () => {
+    const props = { status: 'loading' }
     const wrapper = setup({ props })
 
     testSubComponents(wrapper, {
-      'error': [1, (error) => {
-        assert.include(error.text(), 'foobar', 'error should render the error msg')
-      }],
-      'load-more-btn': 0,
-      'loader': 0,
-      'no-more-post': 0,
-    })
-  })
-
-  it('should render the correct components, when loading', () => {
-    const props = { isLoading: true }
-    const wrapper = setup({ props })
-
-    testSubComponents(wrapper, {
-      'error': 0,
-      'load-more-btn': 0,
       'loader': 1,
-      'no-more-post': 0,
+      'load-more-btn': 0,
+      'error': 0,
+      'no-more-post-msg': 0,
+      'no-more-match-msg': 0,
+      'no-post-msg': 0,
+      'no-match-msg': 0,
     })
   })
 
-  it('should render the correct components, when there is NO more post and it is NOT loading', () => {
-    const props = { isThereMorePost: false }
+  it('should render the correct component when status is "can-load"', () => {
+    const props = { status: 'can-load' }
     const wrapper = setup({ props })
 
     testSubComponents(wrapper, {
-      'error': 0,
-      'load-more-btn': 0,
       'loader': 0,
-      'no-more-post': 1,
+      'load-more-btn': [1, (button) => {
+        td.verify(loadMoreTd(), { times: 0, ignoreExtraArgs: true })
+        button.simulate('click')
+        td.verify(loadMoreTd(), { times: 1, ignoreExtraArgs: true })
+        button.simulate('click')
+        td.verify(loadMoreTd(), { times: 2, ignoreExtraArgs: true })
+      }],
+      'error': 0,
+      'no-more-post-msg': 0,
+      'no-more-match-msg': 0,
+      'no-post-msg': 0,
+      'no-match-msg': 0,
     })
   })
 
-  it('should render the correct components, when there is NO more post and it is loading', () => {
-    const props = { isThereMorePost: false, isLoading: true }
+  it('should render the correct component when status is "error"', () => {
+    const testWith = (errMsg) => {
+      const props = { status: 'error', error: new Error(errMsg) }
+      const wrapper = setup({ props })
+
+      testSubComponents(wrapper, {
+        'loader': 0,
+        'load-more-btn': 0,
+        'error': [1, (error) => {
+          const actual = error.dive().text()
+          const expected = errMsg
+          assert.include(actual, expected)
+        }],
+        'no-more-post-msg': 0,
+        'no-more-match-msg': 0,
+        'no-post-msg': 0,
+        'no-match-msg': 0,
+      })
+    }
+
+    testWith('some error message')
+    testWith('some other error message')
+  })
+
+  it('should render the correct component when status is "no-more-post"', () => {
+    const props = { status: 'no-more-post' }
     const wrapper = setup({ props })
 
     testSubComponents(wrapper, {
-      'error': 0,
+      'loader': 0,
       'load-more-btn': 0,
-      'loader': 1,
-      'no-more-post': 0,
+      'error': 0,
+      'no-more-post-msg': 1,
+      'no-more-match-msg': 0,
+      'no-post-msg': 0,
+      'no-match-msg': 0,
+    })
+  })
+
+  it('should render the correct component when status is "no-more-match"', () => {
+    const props = { status: 'no-more-match' }
+    const wrapper = setup({ props })
+
+    testSubComponents(wrapper, {
+      'loader': 0,
+      'load-more-btn': 0,
+      'error': 0,
+      'no-more-post-msg': 0,
+      'no-more-match-msg': 1,
+      'no-post-msg': 0,
+      'no-match-msg': 0,
+    })
+  })
+
+  it('should render the correct component when status is "no-post"', () => {
+    const props = { status: 'no-post' }
+    const wrapper = setup({ props })
+
+    testSubComponents(wrapper, {
+      'loader': 0,
+      'load-more-btn': 0,
+      'error': 0,
+      'no-more-post-msg': 0,
+      'no-more-match-msg': 0,
+      'no-post-msg': 1,
+      'no-match-msg': 0,
+    })
+  })
+
+  it('TODO: no-match call to action (e.g. clear search)')
+  it('should render the correct component when status is "no-match"', () => {
+    const props = { status: 'no-match' }
+    const wrapper = setup({ props })
+
+    testSubComponents(wrapper, {
+      'loader': 0,
+      'load-more-btn': 0,
+      'error': 0,
+      'no-more-post-msg': 0,
+      'no-more-match-msg': 0,
+      'no-post-msg': 0,
+      'no-match-msg': 1,
     })
   })
 })
