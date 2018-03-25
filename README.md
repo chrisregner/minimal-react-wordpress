@@ -31,6 +31,12 @@
 
 ---
 
+# bug
+
+- When you go directly to search page with search url params, the search params won't be recognized by the app. They have to be inputted through the app itself
+
+---
+
 # v1 package infos
 
 - dependencies

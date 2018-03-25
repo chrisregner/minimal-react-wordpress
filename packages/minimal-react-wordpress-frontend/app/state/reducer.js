@@ -1,20 +1,20 @@
 import { combineReducers } from 'redux'
 
-import postListReducer, * as fromPostList from './postList'
+import pageReducer, * as fromPage from './page'
 import uiReducer, * as fromUi from './ui'
 
 const rootReducer = combineReducers({
-  page: postListReducer,
+  page: pageReducer,
   ui: uiReducer,
 })
 
-// postList selectors
-export const getPostList = ({ page }) => fromPostList.getPostList(page)
-export const getError = ({ page }) => fromPostList.getError(page)
-export const getPage = ({ page }) => fromPostList.getPage(page)
-export const getSearchKeyword = ({ page }) => fromPostList.getSearchKeyword(page)
-export const getSearchTags = ({ page }) => fromPostList.getSearchTags(page)
-export const getStatus = ({ page }) => fromPostList.getStatus(page)
+// page selectors
+export const getPostList = ({ page }) => fromPage.getPostList(page)
+export const getError = ({ page }) => fromPage.getError(page)
+export const getPage = ({ page }) => fromPage.getPage(page)
+export const getSearchKeyword = ({ page }) => fromPage.getSearchKeyword(page)
+export const getSearchTags = ({ page }) => fromPage.getSearchTags(page)
+export const getStatus = ({ page }) => fromPage.getStatus(page)
 
 // ui selectors
 export const getIsSearchVisible = ({ ui }) => fromUi.getIsSearchVisible(ui)

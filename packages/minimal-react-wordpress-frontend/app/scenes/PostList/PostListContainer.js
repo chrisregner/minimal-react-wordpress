@@ -1,7 +1,11 @@
 import { connect } from 'react-redux'
 import { lifecycle, setDisplayName, compose } from 'recompose'
 
-import { fetchPostList, fetchMorePostList } from 'app/state/postList'
+import {
+  fetchPostList,
+  fetchMorePostList,
+  clearSearch,
+} from 'app/state/page'
 import PostList from './PostList'
 import {
   getPostList,
@@ -19,7 +23,7 @@ const enhance = compose(
     }),
     ({
       loadMore: fetchMorePostList,
-      fetchPostList,
+      fetchPostList, clearSearch,
     })
   ),
   lifecycle({

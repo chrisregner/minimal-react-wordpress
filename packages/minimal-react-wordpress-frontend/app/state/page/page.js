@@ -7,6 +7,7 @@ import {
   SET_SEARCH_KEYWORD,
   ADD_SEARCH_TAG,
   REMOVE_SEARCH_TAG,
+  CLEAR_SEARCH,
   ADD_POST_LIST,
   SET_ERROR,
 } from 'app/state/actionTypes'
@@ -17,9 +18,8 @@ import {
  */
 
 const defaultState = {}
-const postListReducer = handleActions({
+const pageReducer = handleActions({
   [FETCH_POST_LIST]: state => ({
-    ...state,
     postList: [],
     page: 1,
     searchKeyword: '',
@@ -57,14 +57,21 @@ const postListReducer = handleActions({
     status: 'loading',
   }),
 
-  [ADD_POST_LIST]: ({ postList, ...state }, { payload }) => ({
+  [CLEAR_SEARCH]: state => ({
     ...state,
+    postList: [],
+    page: 1,
+    searchKeyword: '',
+    searchTags: [],
+    status: 'loading',
+  }),
+
+  [ADD_POST_LIST]: ({ postList, page, ...state }, { payload }) => ({
+    ...state, page,
     postList: (postList || []).concat(payload.postList),
     status: (() => {
-      const { page, searchKeyword, searchTags } = state
       const { totalPages } = payload
-      const hasSearchParam =
-        !!((searchKeyword && searchKeyword.length) || (searchTags && searchTags.length))
+      const hasSearchParam = getHasFilter(state)
 
       if (totalPages > 0 && page < totalPages) return 'can-load'
       if (totalPages > 0 && page === totalPages && hasSearchParam) return 'no-more-match'
@@ -87,6 +94,7 @@ export const fetchMorePostList = createAction(FETCH_MORE_POST_LIST)
 export const setSearchKeyword = createAction(SET_SEARCH_KEYWORD)
 export const addSearchTag = createAction(ADD_SEARCH_TAG)
 export const removeSearchTag = createAction(REMOVE_SEARCH_TAG)
+export const clearSearch = createAction(CLEAR_SEARCH)
 export const addPostList = createAction(ADD_POST_LIST)
 export const setError = createAction(SET_ERROR)
 
@@ -98,4 +106,8 @@ export const getSearchKeyword = state => state.searchKeyword
 export const getSearchTags = state => state.searchTags
 export const getStatus = state => state.status
 
-export default postListReducer
+/* Internal Functions */
+const getHasFilter = ({ searchKeyword, searchTags }) =>
+  !!((searchKeyword && searchKeyword.length) || (searchTags && searchTags.length))
+
+export default pageReducer

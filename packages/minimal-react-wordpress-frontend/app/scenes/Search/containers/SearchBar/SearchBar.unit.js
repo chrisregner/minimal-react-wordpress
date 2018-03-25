@@ -46,6 +46,20 @@ describe('components/Search/containers/SearchBar/SearchBarComponent', () => {
     td.verify(setInputNodeTd(inputNode), { times: 1 })
   })
 
+  it('should pass searchKeyword to search input', () => {
+    (() => {
+      const props = { searchKeyword: 'some search keyword' }
+      const input = find(setup({ props }), 'input')
+      assert.equal(input.prop('value'), 'some search keyword')
+    })(); // eslint-disable-line
+
+    (() => {
+      const props = { searchKeyword: 'some other search keyword' }
+      const input = find(setup({ props }), 'input')
+      assert.equal(input.prop('value'), 'some other search keyword')
+    })()
+  })
+
   it('should call setSearch() with the value when search input value is changed', () => {
     const input = find(setup(), 'input')
     td.verify(setSearchKeywordTd(), { times: 0, ignoreExtraArgs: true })

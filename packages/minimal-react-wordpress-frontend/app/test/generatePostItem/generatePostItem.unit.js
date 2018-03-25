@@ -1,4 +1,4 @@
-import { describe, it, before, after } from 'mocha'
+import { describe, it, before, afterEach } from 'mocha'
 import { assert } from 'chai'
 import td from 'testdouble'
 import call from 'ramda/src/call'
@@ -12,9 +12,7 @@ describe('utils/generatePostItem', () => {
     generatePostItem = require('./generatePostItem').default
   })
 
-  after(() => {
-    td.reset()
-  })
+  afterEach(td.reset)
 
   it('should return the result of simplifyPostItem(generateRawPostItem())', () => {
     call(() => {

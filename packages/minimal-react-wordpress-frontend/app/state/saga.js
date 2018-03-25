@@ -1,10 +1,10 @@
 import { fork } from 'redux-saga/effects'
 
-import postListSaga from './postList/postListSaga'
+import pageSaga from './page/pageSaga'
 
 const rootSaga = function * rootSaga () {
   yield [
-    fork(postListSaga),
+    fork(pageSaga),
   ]
 }
 

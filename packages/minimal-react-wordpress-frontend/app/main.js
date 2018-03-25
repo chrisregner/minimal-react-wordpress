@@ -3,8 +3,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { Router } from 'react-router-dom'
 
+import history from 'app/history'
 import App from 'app/components/App'
 import store from 'app/state/store'
 
@@ -12,9 +13,9 @@ const render = Component =>
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <BrowserRouter>
+        <Router history={history}>
           <Component />
-        </BrowserRouter>
+        </Router>
       </Provider>
     </AppContainer>,
     document.getElementById('root')

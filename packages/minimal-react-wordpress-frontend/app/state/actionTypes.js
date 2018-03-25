@@ -3,6 +3,7 @@ export const FETCH_MORE_POST_LIST = 'postList/FETCH_MORE_POST_LIST'
 export const SET_SEARCH_KEYWORD = 'postList/SET_SEARCH_KEYWORD'
 export const ADD_SEARCH_TAG = 'postList/ADD_SEARCH_TAG'
 export const REMOVE_SEARCH_TAG = 'postList/REMOVE_SEARCH_TAG'
+export const CLEAR_SEARCH = 'postList/CLEAR_SEARCH'
 export const ADD_POST_LIST = 'postList/ADD_POST_LIST'
 export const SET_ERROR = 'postList/SET_ERROR'
 

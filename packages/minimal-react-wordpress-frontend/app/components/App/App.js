@@ -1,4 +1,5 @@
 import React from 'react'
+import { Route } from 'react-router-dom'
 
 import GlobalStyles from 'app/components/GlobalStyles'
 import Header from 'app/components/Header'
@@ -16,6 +17,10 @@ const App = () =>
         </div>
       </div>
     </div>
+
+    <Route exact path='/' />
+    <Route path='/search' />
+    <Route path='/post/:postid' />
 
     <GlobalStyles />
   </div>

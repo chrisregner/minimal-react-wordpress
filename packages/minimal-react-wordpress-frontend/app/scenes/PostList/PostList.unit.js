@@ -12,13 +12,14 @@ import PostItem from './components/PostItem'
 import PostList from './PostList'
 
 describe('scenes/PostList/PostListComponent', () => {
-  let setup, loadMoreTd
+  let setup, loadMoreTd, clearSearchTd
 
   before(() => {
     loadMoreTd = td.func()
+    clearSearchTd = td.func()
     setup = makeSetupComponentTest({
       Component: PostList,
-      props: { loadMore: loadMoreTd },
+      props: { loadMore: loadMoreTd, clearSearch: clearSearchTd },
     })
   })
 
@@ -62,11 +63,11 @@ describe('scenes/PostList/PostListComponent', () => {
 
     testSubComponents(wrapper, {
       'loader': 0,
-      'load-more-btn': [1, (button) => {
+      'load-more-btn': [1, (loadMoreBtn) => {
         td.verify(loadMoreTd(), { times: 0, ignoreExtraArgs: true })
-        button.simulate('click')
+        loadMoreBtn.simulate('click')
         td.verify(loadMoreTd(), { times: 1, ignoreExtraArgs: true })
-        button.simulate('click')
+        loadMoreBtn.simulate('click')
         td.verify(loadMoreTd(), { times: 2, ignoreExtraArgs: true })
       }],
       'error': 0,
@@ -146,7 +147,6 @@ describe('scenes/PostList/PostListComponent', () => {
     })
   })
 
-  it('TODO: no-match call to action (e.g. clear search)')
   it('should render the correct component when status is "no-match"', () => {
     const props = { status: 'no-match' }
     const wrapper = setup({ props })
@@ -158,7 +158,14 @@ describe('scenes/PostList/PostListComponent', () => {
       'no-more-post-msg': 0,
       'no-more-match-msg': 0,
       'no-post-msg': 0,
-      'no-match-msg': 1,
+      'no-match-msg': [1, (noMatchMsg) => {
+        const clearSearchBtn = find(noMatchMsg, 'clear-search-btn')
+        td.verify(clearSearchTd(), { times: 0, ignoreExtraArgs: true })
+        clearSearchBtn.simulate('click')
+        td.verify(clearSearchTd(), { times: 1, ignoreExtraArgs: true })
+        clearSearchBtn.simulate('click')
+        td.verify(clearSearchTd(), { times: 2, ignoreExtraArgs: true })
+      }],
     })
   })
 })

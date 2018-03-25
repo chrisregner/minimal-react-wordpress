@@ -14,7 +14,7 @@ const Button = ({ children, ...props }) =>
     {children}
   </button>
 
-const PostList = ({ postList, loadMore, error, status }) =>
+const PostList = ({ postList, loadMore, clearSearch, error, status }) =>
   <Fragment>
     {/* Post items */}
     {postList && postList.length > 0 &&
@@ -59,6 +59,11 @@ const PostList = ({ postList, loadMore, error, status }) =>
             return <Warning data-test='no-match-msg'>
               Your search returns <strong>no match</strong>.
               You can try other keyword and tags, or visit other pages.
+              <div className='pt4'>
+                <Button data-test='clear-search-btn' onClick={clearSearch}>
+                Clear Search
+                </Button>
+              </div>
             </Warning>
           case 'no-post':
             return <Warning data-test='no-post-msg'>
@@ -79,6 +84,7 @@ Button.propTypes = {
 
 PostList.propTypes = {
   loadMore: PropTypes.func.isRequired,
+  clearSearch: PropTypes.func.isRequired,
   error: PropTypes.instanceOf(Error),
   postList: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
