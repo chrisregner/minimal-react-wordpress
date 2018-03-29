@@ -6,12 +6,14 @@ import {
   fetchMorePostList,
   clearSearch,
 } from 'app/state/page'
-import PostList from './PostList'
+
 import {
   getPostList,
   getError,
   getStatus,
 } from 'app/state'
+
+import PostList from './PostList'
 
 const enhance = compose(
   setDisplayName('PostListContainer'),

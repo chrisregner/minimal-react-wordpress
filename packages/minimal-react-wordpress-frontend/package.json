@@ -50,6 +50,7 @@
     "react-hot-loader": "^4.0.0",
     "react-motion": "^0.5.2",
     "redux-saga-test-plan": "^3.5.0",
+    "shortid": "^2.2.8",
     "styled-jsx": "^2.2.5",
     "testdouble": "^3.5.2",
     "uglifyjs-webpack-plugin": "^1.2.2",

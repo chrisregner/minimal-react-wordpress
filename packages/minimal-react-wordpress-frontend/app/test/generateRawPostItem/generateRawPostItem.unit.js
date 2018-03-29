@@ -9,7 +9,7 @@ import {
   postWithTagsSchema,
 } from './rawPostSchema'
 
-describe('utils/generateRawPostItem', () => {
+describe('test/generateRawPostItem', () => {
   it('should generate posts with basic and excess details', () => {
     const fakePost = generateRawPostItem()
     const actual = basePostSchema.validate(fakePost).error

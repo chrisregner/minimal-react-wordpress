@@ -1,6 +1,6 @@
 {
-  "name:": "TagCloud",
+  "name:": "TagCloudContainer",
   "version": "0.0.0",
   "private": true,
-  "main": "./TagCloud.js"
+  "main": "./TagCloudContainer.js"
 }

@@ -1,14 +1,15 @@
 import React from 'react'
 import { describe, it, before } from 'mocha'
 import { assert } from 'chai'
-import call from 'ramda/src/call'
 import { Link } from 'react-router-dom'
 
 import {
   makeSetupComponentTest,
   findTestComponent as find,
   generatePostItem,
+  generateTags,
 } from 'app/test'
+import TagCloud from 'app/components/TagCloud'
 import PostItem from './PostItem'
 
 describe('components/PostList/components/PostItem', () => {
@@ -22,107 +23,107 @@ describe('components/PostList/components/PostItem', () => {
   })
 
   it('should render the sanitized title', () => {
-    call(() => {
+    (() => {
       const props = { title: '<div>foo<script>alert(0)</script></div>' }
       assert.include(
         find(setup({ props }), 'title').html(),
         '<div>foo</div>'
       )
-    })
+    })(); // eslint-disable-line semi
 
-    call(() => {
+    (() => {
       const props = { title: '<div>bar<script>alert(0)</script></div>' }
       assert.include(
         find(setup({ props }), 'title').html(),
         '<div>bar</div>'
       )
-    })
+    })()
   })
 
   it('should render the excerpt', () => {
-    call(() => {
+    (() => {
       const props = { excerpt: '<div>foo<script>alert(0)</script></div>' }
       assert.include(
         find(setup({ props }), 'excerpt').html(),
         '<div>foo</div>'
       )
-    })
+    })(); // eslint-disable-line semi
 
-    call(() => {
+    (() => {
       const props = { excerpt: '<div>bar<script>alert(0)</script></div>' }
       assert.include(
         find(setup({ props }), 'excerpt').html(),
         '<div>bar</div>'
       )
-    })
+    })()
   })
 
   it('should render the created date, if there is NO modied date', () => {
-    call(() => {
+    (() => {
       const props = { date: new Date(2018, 2, 15) }
       assert.include(
         find(setup({ props }), 'date').text(),
         'Mar 15, 2018'
       )
-    })
+    })(); // eslint-disable-line semi
 
-    call(() => {
+    (() => {
       const props = { date: new Date(1998, 5, 1) }
       assert.include(
         find(setup({ props }), 'date').text(),
         'Jun 1, 1998'
       )
-    })
+    })()
   })
 
   it('should render the modified date in place of created date, if any', () => {
-    call(() => {
+    (() => {
       const props = { modified: new Date(2018, 2, 15) }
       assert.include(
         find(setup({ props }), 'date').text(),
         'Mar 15, 2018'
       )
-    })
+    })(); // eslint-disable-line semi
 
-    call(() => {
+    (() => {
       const props = { modified: new Date(1998, 5, 1) }
       assert.include(
         find(setup({ props }), 'date').text(),
         'Jun 1, 1998'
       )
-    })
+    })()
   })
 
   it('should indicate that rendered date is creation date and NOT modified, if there is no modified date', () => {
-    call(() => {
+    (() => {
       const props = { date: new Date(2018, 2, 15) }
       const date = find(setup({ props }), 'date').text()
       assert.include(date, 'created')
       assert.notInclude(date, 'updated')
-    })
+    })(); // eslint-disable-line semi
 
-    call(() => {
+    (() => {
       const props = { date: new Date(1998, 5, 1) }
       const date = find(setup({ props }), 'date').text()
       assert.include(date, 'created')
       assert.notInclude(date, 'updated')
-    })
+    })()
   })
 
   it('should indicate that rendered date is modified date and not CREATED, if any', () => {
-    call(() => {
+    (() => {
       const props = { modified: new Date(2018, 2, 15) }
       const date = find(setup({ props }), 'date').text()
       assert.include(date, 'updated')
       assert.notInclude(date, 'created')
-    })
+    })(); // eslint-disable-line semi
 
-    call(() => {
+    (() => {
       const props = { modified: new Date(1998, 5, 1) }
       const date = find(setup({ props }), 'date').text()
       assert.include(date, 'updated')
       assert.notInclude(date, 'created')
-    })
+    })()
   })
 
   it('should render 3 post links when there is featured media', () => {
@@ -219,5 +220,15 @@ describe('components/PostList/components/PostItem', () => {
     )
   })
 
-  it('should render tags with correct props and component')
+  it('should render tags with correct props and component', () => {
+    const tags = generateTags().map(tags => ({
+      toggleTag: () => {},
+      isActive: false,
+    }))
+    const props = { tags }
+    const tagsWrpr = find(setup({ props }), 'tags')
+
+    assert.isTrue(tagsWrpr.is(TagCloud))
+    assert.equal(tagsWrpr.prop('tags'), tags)
+  })
 })

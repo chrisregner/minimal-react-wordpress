@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
 import { compose, setDisplayName } from 'recompose'
-import withViewport from 'app/containers/withViewport'
+
 import { flagSearchAnimationEnd } from 'app/state/ui'
 import { getIsSearchVisible } from 'app/state'
+import withViewport from 'app/hoc/withViewport'
 import Search from './Search'
 
 const SearchContainer = compose(

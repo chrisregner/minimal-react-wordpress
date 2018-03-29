@@ -1,0 +1,6 @@
+{
+  "name:": "generateRawTags",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./generateRawTags.js"
+}

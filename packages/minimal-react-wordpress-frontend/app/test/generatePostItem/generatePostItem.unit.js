@@ -3,7 +3,7 @@ import { assert } from 'chai'
 import td from 'testdouble'
 import call from 'ramda/src/call'
 
-describe('utils/generatePostItem', () => {
+describe('test/generatePostItem', () => {
   let generatePostItem, generateRawPostItemTd, simplifyPostItemTd
 
   before(() => {

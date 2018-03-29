@@ -6,30 +6,28 @@ import td from 'testdouble'
 import qs from 'query-string'
 import pipeP from 'ramda/src/pipeP'
 
-import { generateRawPostList } from 'app/test'
+import { generateRawPostList, generateRawTags } from 'app/test'
 import simplifyPostList from 'app/utils/simplifyPostList'
+import simplifyTags from 'app/utils/simplifyTags'
 import * as api from 'app/api/wpapi'
 import * as fromState from 'app/state'
 import * as fromPage from './page'
 
-describe('state/pageSaga', () => {
-  let fetchPostList, syncRoute, historyTd, getLocationTd
+describe('state/page/saga', () => {
+  let fromPageSaga, historyTd, getLocationTd
 
   before(() => {
     td.reset()
     historyTd = td.replace('../../history').default
     getLocationTd = td.replace('../../utils/getLocation').default
 
-    const pageSagaMod = require('./pageSaga')
-
-    fetchPostList = pageSagaMod.fetchPostList
-    syncRoute = pageSagaMod.syncRoute
+    fromPageSaga = require('./pageSaga')
   })
 
   afterEach(td.reset)
 
   describe('*fetchPostList()', () => {
-    it('should fetch with any relevant parameters from state and put the response with SET_POST_LIST', () => {
+    it('should fetch post list with some parameters from state and put the response', () => {
       // With page = 1, totalpages = 1
       const testVariationOne = () => {
         const fakePosts = generateRawPostList()
@@ -40,12 +38,12 @@ describe('state/pageSaga', () => {
           },
         }
 
-        return expectSaga(fetchPostList)
+        return expectSaga(fromPageSaga.fetchPostList)
           .provide([
             [select(fromState.getPage), 1],
             [select(fromState.getSearchKeyword), undefined],
-            [select(fromState.getSearchTags), undefined],
-            [call(api.wpFetchPostList, {
+            [select(fromState.getActiveSearchTagsIds), undefined],
+            [call(api.apiFetchPostList, {
               page: 1,
               search: undefined,
               tags: undefined,
@@ -68,12 +66,12 @@ describe('state/pageSaga', () => {
           },
         }
 
-        return expectSaga(fetchPostList)
+        return expectSaga(fromPageSaga.fetchPostList)
           .provide([
             [select(fromState.getPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
-            [select(fromState.getSearchTags), ['some', 'search', 'tags']],
-            [call(api.wpFetchPostList, {
+            [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
+            [call(api.apiFetchPostList, {
               page: 5,
               search: 'some search keyword',
               tags: ['some', 'search', 'tags'],
@@ -92,17 +90,17 @@ describe('state/pageSaga', () => {
       ])
     })
 
-    it('should fetch and put any error with SET_ERROR', () => {
+    it('should fetch post list with some parameters from state and put any error', () => {
       // With page = 1, totalpages = 1, some error
       const testVariationOne = () => {
         const e = new Error('some error')
 
-        return expectSaga(fetchPostList)
+        return expectSaga(fromPageSaga.fetchPostList)
           .provide([
             [select(fromState.getPage), 1],
             [select(fromState.getSearchKeyword), undefined],
-            [select(fromState.getSearchTags), undefined],
-            [call(api.wpFetchPostList, {
+            [select(fromState.getActiveSearchTagsIds), undefined],
+            [call(api.apiFetchPostList, {
               page: 1,
               search: undefined,
               tags: undefined,
@@ -116,12 +114,12 @@ describe('state/pageSaga', () => {
       const testVariationTwo = () => {
         const e = new Error('some other error')
 
-        return expectSaga(fetchPostList)
+        return expectSaga(fromPageSaga.fetchPostList)
           .provide([
             [select(fromState.getPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
-            [select(fromState.getSearchTags), ['some', 'search', 'tags']],
-            [call(api.wpFetchPostList, {
+            [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
+            [call(api.apiFetchPostList, {
               page: 5,
               search: 'some search keyword',
               tags: ['some', 'search', 'tags'],
@@ -146,10 +144,10 @@ describe('state/pageSaga', () => {
       td.when(getLocationTd()).thenReturn({ pathname: '/search' })
       td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
-      return expectSaga(syncRoute)
+      return expectSaga(fromPageSaga.syncRoute)
         .provide([
           [select(fromState.getSearchKeyword), undefined],
-          [select(fromState.getSearchTags), undefined],
+          [select(fromState.getActiveSearchTagsIds), undefined],
         ])
         .run()
         .then(() => {
@@ -164,10 +162,10 @@ describe('state/pageSaga', () => {
         td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
         td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), 'some search keyword'],
-            [select(fromState.getSearchTags), undefined],
+            [select(fromState.getActiveSearchTagsIds), undefined],
           ])
           .run()
           .then(() => {
@@ -182,10 +180,10 @@ describe('state/pageSaga', () => {
         td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
         td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), undefined],
-            [select(fromState.getSearchTags), ['some', 'search', 'tags']],
+            [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
           ])
           .run()
           .then(() => {
@@ -200,10 +198,10 @@ describe('state/pageSaga', () => {
         td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
         td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), 'some search keyword'],
-            [select(fromState.getSearchTags), ['some', 'search', 'tags']],
+            [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
           ])
           .run()
           .then(() => {
@@ -230,10 +228,10 @@ describe('state/pageSaga', () => {
         td.when(getLocationTd()).thenReturn({ pathname: '/search' })
         td.verify(historyTd.replace(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), 'some search keyword'],
-            [select(fromState.getSearchTags), undefined],
+            [select(fromState.getActiveSearchTagsIds), undefined],
           ])
           .run()
           .then(() => {
@@ -248,10 +246,10 @@ describe('state/pageSaga', () => {
         td.when(getLocationTd()).thenReturn({ pathname: '/search' })
         td.verify(historyTd.replace(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), undefined],
-            [select(fromState.getSearchTags), ['some', 'search', 'tags']],
+            [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
           ])
           .run()
           .then(() => {
@@ -266,10 +264,10 @@ describe('state/pageSaga', () => {
         td.when(getLocationTd()).thenReturn({ pathname: '/search' })
         td.verify(historyTd.replace(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), 'some search keyword'],
-            [select(fromState.getSearchTags), ['some', 'search', 'tags']],
+            [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
           ])
           .run()
           .then(() => {
@@ -297,10 +295,10 @@ describe('state/pageSaga', () => {
         () => {
           td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
 
-          return expectSaga(syncRoute)
+          return expectSaga(fromPageSaga.syncRoute)
             .provide([
               [select(fromState.getSearchKeyword), 'some search keyword'],
-              [select(fromState.getSearchTags), ['some', 'search', 'tags']],
+              [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
             ])
             .run()
         },
@@ -310,10 +308,10 @@ describe('state/pageSaga', () => {
           td.when(getLocationTd()).thenReturn({ pathname: '/search' })
           td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
-          return expectSaga(syncRoute)
+          return expectSaga(fromPageSaga.syncRoute)
             .provide([
               [select(fromState.getSearchKeyword), undefined],
-              [select(fromState.getSearchTags), undefined],
+              [select(fromState.getActiveSearchTagsIds), undefined],
             ])
             .run()
             .then(() => {
@@ -330,10 +328,10 @@ describe('state/pageSaga', () => {
         () => {
           td.when(getLocationTd()).thenReturn({ pathname: '/some/other/page' })
 
-          return expectSaga(syncRoute)
+          return expectSaga(fromPageSaga.syncRoute)
             .provide([
               [select(fromState.getSearchKeyword), 'some search keyword'],
-              [select(fromState.getSearchTags), ['some', 'search', 'tags']],
+              [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
             ])
             .run()
         },
@@ -343,10 +341,10 @@ describe('state/pageSaga', () => {
           td.when(getLocationTd()).thenReturn({ pathname: '/search' })
           td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
-          return expectSaga(syncRoute)
+          return expectSaga(fromPageSaga.syncRoute)
             .provide([
               [select(fromState.getSearchKeyword), undefined],
-              [select(fromState.getSearchTags), undefined],
+              [select(fromState.getActiveSearchTagsIds), undefined],
             ])
             .run()
             .then(() => {
@@ -360,11 +358,11 @@ describe('state/pageSaga', () => {
       return pipeP(...testVariationOne, ...testVariationTwo)()
     })
 
-    it('should put any error with SET_ERROR', () => {
+    it('should put any error', () => {
       const testVariationOne = () => {
         const e = new Error('some error')
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), throwError(e)],
           ])
@@ -375,7 +373,7 @@ describe('state/pageSaga', () => {
       const testVariationTwo = () => {
         const e = new Error('some other error')
 
-        return expectSaga(syncRoute)
+        return expectSaga(fromPageSaga.syncRoute)
           .provide([
             [select(fromState.getSearchKeyword), throwError(e)],
           ])
@@ -389,5 +387,41 @@ describe('state/pageSaga', () => {
         testVariationTwo(),
       ])
     })
+  })
+
+  describe('*fetchTags', () => {
+    it('should fetch tags and put the response', () => {
+      const rawTags = generateRawTags()
+      return expectSaga(fromPageSaga.fetchTags)
+        .provide([
+          [call(api.apiFetchTags), { data: rawTags }],
+        ])
+        .put(fromPage.setSearchTags(simplifyTags(rawTags)))
+        .run()
+    })
+
+    it('should fetch tags and log any error', async () => {
+      const testWith = async (error) => {
+        const consoleErrorTd = td.replace(console, 'error')
+
+        td.verify(consoleErrorTd(), { times: 0, ignoreExtraArgs: true })
+        await expectSaga(fromPageSaga.fetchTags)
+          .provide([
+            [call(api.apiFetchTags), throwError(error)],
+          ])
+          .run()
+
+        td.verify(consoleErrorTd(error), { times: 1 })
+        td.reset()
+      }
+
+      await testWith(new Error('some error'))
+      await testWith(new Error('some other error'))
+    })
+  })
+
+  describe('*fetchTags', () => {
+    it('should fetch nav links and put the response')
+    it('should fetch nav links and log any error')
   })
 })

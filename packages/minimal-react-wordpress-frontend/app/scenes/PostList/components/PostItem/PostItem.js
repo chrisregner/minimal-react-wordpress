@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 import sanitize from 'app/utils/sanitizeDom'
 import format from 'date-fns/format'
+import TagCloud from 'app/components/TagCloud'
 
 const createImageProps = ({ mediumLargeSrc, largeSrc, fullSrc, altText }) => {
   let srcSet = ''
@@ -19,7 +20,7 @@ const createImageProps = ({ mediumLargeSrc, largeSrc, fullSrc, altText }) => {
   }
 }
 
-const PostItem = ({ id, title, excerpt, modified, date, featuredMedia }) => {
+const PostItem = ({ id, title, excerpt, modified, date, featuredMedia, tags }) => {
   const imageProps = featuredMedia && createImageProps(featuredMedia)
 
   return <section className='pb5'>
@@ -46,12 +47,13 @@ const PostItem = ({ id, title, excerpt, modified, date, featuredMedia }) => {
           {modified ? 'updated' : 'created'}&ensp;
           {format(modified || date, 'MMM D, YYYY')}
         </span>
-        &ensp;<b>&middot;</b>&ensp;
 
         {/* Tags */}
-        <a href='' className='color-muted hover-primary underline'>Alpha</a>,&ensp;
-        <a href='' className='color-muted hover-primary underline'>Beta</a>,&ensp;
-        <a href='' className='color-muted hover-primary underline'>Gamma</a>
+        {tags && tags.length > 0 &&
+          <React.Fragment>
+            &ensp;<b>&middot;</b>&ensp;
+            <TagCloud data-test='tags' tags={tags} />
+          </React.Fragment>}
       </div>
 
       {/* Excerpt */}
@@ -76,6 +78,7 @@ PostItem.propTypes = {
   excerpt: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
   modified: PropTypes.instanceOf(Date),
+  tags: PropTypes.arrayOf(PropTypes.object),
   featuredMedia: PropTypes.shape({
     altText: PropTypes.string.isRequired,
     fullSrc: PropTypes.string.isRequired,

@@ -15,7 +15,7 @@ const Search = ({ isSearchVisible, viewport, flagSearchAnimationEnd }) =>
       <div className='fl-m pb0-m pb3 pb3-l pr3-m pr5-l w-40-m w-100-l mw5-l'>
         <SearchBar />
       </div>
-      <div className='fl-m w-60-m w-100-l mw5-l'>
+      <div className='fl-m w-60-m w-100-l mw5-l f6 ttl'>
         <TagCloud />
       </div>
     </div>

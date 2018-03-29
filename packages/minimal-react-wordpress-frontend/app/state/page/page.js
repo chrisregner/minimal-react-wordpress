@@ -1,12 +1,12 @@
 import { handleActions, createAction } from 'redux-actions'
-import without from 'ramda/src/without'
 
 import {
   FETCH_POST_LIST,
   FETCH_MORE_POST_LIST,
+  FETCH_TAGS,
   SET_SEARCH_KEYWORD,
-  ADD_SEARCH_TAG,
-  REMOVE_SEARCH_TAG,
+  SET_SEARCH_TAGS,
+  TOGGLE_SEARCH_TAG,
   CLEAR_SEARCH,
   ADD_POST_LIST,
   SET_ERROR,
@@ -20,6 +20,7 @@ import {
 const defaultState = {}
 const pageReducer = handleActions({
   [FETCH_POST_LIST]: state => ({
+    ...state,
     postList: [],
     page: 1,
     searchKeyword: '',
@@ -41,20 +42,19 @@ const pageReducer = handleActions({
     status: 'loading',
   }),
 
-  [ADD_SEARCH_TAG]: ({ searchTags = [], ...state }, { payload }) => ({
+  [SET_SEARCH_TAGS]: (state, { payload }) => ({
     ...state,
-    postList: [],
-    searchTags: [...searchTags, payload],
-    page: 1,
-    status: 'loading',
+    searchTags: payload.map(tag => ({ isActive: false, ...tag })),
   }),
 
-  [REMOVE_SEARCH_TAG]: ({ searchTags = [], ...state }, { payload }) => ({
+  [TOGGLE_SEARCH_TAG]: ({ searchTags, ...state }, { payload }) => ({
     ...state,
     postList: [],
-    searchTags: without([payload], searchTags),
     page: 1,
     status: 'loading',
+    searchTags: searchTags.map(tag => tag.id === payload
+      ? { ...tag, isActive: !tag.isActive }
+      : tag),
   }),
 
   [CLEAR_SEARCH]: state => ({
@@ -91,9 +91,10 @@ const pageReducer = handleActions({
 /* Action Creators */
 export const fetchPostList = createAction(FETCH_POST_LIST)
 export const fetchMorePostList = createAction(FETCH_MORE_POST_LIST)
+export const fetchTags = createAction(FETCH_TAGS)
 export const setSearchKeyword = createAction(SET_SEARCH_KEYWORD)
-export const addSearchTag = createAction(ADD_SEARCH_TAG)
-export const removeSearchTag = createAction(REMOVE_SEARCH_TAG)
+export const setSearchTags = createAction(SET_SEARCH_TAGS)
+export const toggleSearchTag = createAction(TOGGLE_SEARCH_TAG)
 export const clearSearch = createAction(CLEAR_SEARCH)
 export const addPostList = createAction(ADD_POST_LIST)
 export const setError = createAction(SET_ERROR)
@@ -104,6 +105,10 @@ export const getError = state => state.error
 export const getPage = state => state.page
 export const getSearchKeyword = state => state.searchKeyword
 export const getSearchTags = state => state.searchTags
+export const getActiveSearchTagsIds = state => state
+  .searchTags
+  .filter(tag => tag.isActive)
+  .map(tag => tag.id)
 export const getStatus = state => state.status
 
 /* Internal Functions */

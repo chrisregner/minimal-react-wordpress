@@ -69,6 +69,27 @@ describe('state/ui/reducer', () => {
       testWith({ isSearchVisible: true })
     })
   })
+
+  describe('SET_NAV_LINKS', () => {
+    it('should set nav links and save other keys', () => {
+      const testWith = ({ initState: passedInitState, payload }) => {
+        const initState = { ...passedInitState, otherKey: 'otherValue' }
+        const actual = uiReducer(initState, fromUi.setNavLinks(payload))
+        const expected = { navLinks: payload, otherKey: 'otherValue' }
+        assert.deepInclude(actual, expected)
+      }
+
+      testWith({
+        initState: {},
+        payload: 'some tags',
+      })
+
+      testWith({
+        initState: { tags: 'some old tags' },
+        payload: 'some new tags',
+      })
+    })
+  })
 })
 
 describe('state/ui/selectors', () => {

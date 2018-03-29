@@ -14,6 +14,7 @@ export const getError = ({ page }) => fromPage.getError(page)
 export const getPage = ({ page }) => fromPage.getPage(page)
 export const getSearchKeyword = ({ page }) => fromPage.getSearchKeyword(page)
 export const getSearchTags = ({ page }) => fromPage.getSearchTags(page)
+export const getActiveSearchTagsIds = ({ page }) => fromPage.getActiveSearchTagsIds(page)
 export const getStatus = ({ page }) => fromPage.getStatus(page)
 
 // ui selectors

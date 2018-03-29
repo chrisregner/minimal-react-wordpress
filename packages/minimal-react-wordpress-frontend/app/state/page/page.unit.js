@@ -20,6 +20,7 @@ describe('state/page/reducer', () => {
           status: 'loading',
           searchKeyword: '',
           searchTags: [],
+          otherKey: 'otherValue',
         }
 
         assert.deepEqual(actual, expected)
@@ -98,77 +99,60 @@ describe('state/page/reducer', () => {
     })
   })
 
-  describe('ADD_SEARCH_TAG', () => {
-    const testWith = ({
-      initState: passedInitState,
-      expected: passedExpected,
-      payload,
-    }) => {
-      const initState = { ...passedInitState, otherKey: 'otherValue' }
-      const actual = pageReducer(initState, fromPage.addSearchTag(payload))
-      const expected = { ...passedExpected, otherKey: 'otherValue' }
-      assert.deepInclude(actual, expected)
-    }
+  describe('SET_TAGS', () => {
+    it('should save tags with each having isActive property set to false, and save other keys', () => {
+      const testWith = ({ initState: passedInitState, payload }) => {
+        const initState = { ...passedInitState, otherKey: 'otherValue' }
+        const actual = pageReducer(initState, fromPage.setSearchTags(payload))
+        const expected = {
+          searchTags: payload.map(tag => ({ isActive: false, ...tag })),
+          otherKey: 'otherValue',
+        }
 
-    it('should add the search tag, apply static changes correctly, and save other keys', () => {
+        assert.deepInclude(actual, expected)
+      }
+
       testWith({
         initState: {},
-        payload: 'some tag',
-        expected: {
-          postList: [],
-          searchTags: ['some tag'],
-          status: 'loading',
-          page: 1,
-        },
+        payload: [{ name: 'some' }, { name: 'tags' }],
       })
 
       testWith({
-        initState: { searchTags: [] },
-        payload: 'some tag',
-        expected: {
-          postList: [],
-          searchTags: ['some tag'],
-          status: 'loading',
-          page: 1,
-        },
-      })
-
-      testWith({
-        initState: {
-          searchTags: ['old tag'],
-          status: 'some-other-status',
-          page: 10,
-        },
-        payload: 'new tag',
-        expected: {
-          postList: [],
-          searchTags: ['old tag', 'new tag'],
-          status: 'loading',
-          page: 1,
-        },
+        initState: { searchTags: 'some old tags' },
+        payload: [{ name: 'some' }, { name: 'other' }, { name: 'tags' }],
       })
     })
   })
 
-  describe('REMOVE_SEARCH_TAG', () => {
-    it('should remove the search tag, apply static changes correctly, and save other keys', () => {
+  describe('TOGGLE_SEARCH_TAG', () => {
+    it('should toggle the active property of the tag matched by id, and save other keys', () => {
       const testWith = ({
         initState: passedInitState,
         expected: passedExpected,
         payload,
       }) => {
         const initState = { ...passedInitState, otherKey: 'otherValue' }
-        const actual = pageReducer(initState, fromPage.removeSearchTag(payload))
+        const actual = pageReducer(initState, fromPage.toggleSearchTag(payload))
         const expected = { ...passedExpected, otherKey: 'otherValue' }
         assert.deepInclude(actual, expected)
       }
 
       testWith({
-        initState: { searchTags: ['existing tag'] },
-        payload: 'existing tag',
+        initState: {
+          searchTags: [
+            { id: 1, name: 'some tag', isActive: false },
+            { id: 2, name: 'some other tag', isActive: false },
+            { id: 3, name: 'another tag', isActive: false },
+          ],
+        },
+        payload: 1,
         expected: {
+          searchTags: [
+            { id: 1, name: 'some tag', isActive: true },
+            { id: 2, name: 'some other tag', isActive: false },
+            { id: 3, name: 'another tag', isActive: false },
+          ],
           postList: [],
-          searchTags: [],
           status: 'loading',
           page: 1,
         },
@@ -176,14 +160,23 @@ describe('state/page/reducer', () => {
 
       testWith({
         initState: {
-          searchTags: ['existing tag', 'other existing tag'],
+          searchTags: [
+            { id: 1, name: 'some tag', isActive: false },
+            { id: 2, name: 'some other tag', isActive: true },
+            { id: 3, name: 'another tag', isActive: true },
+          ],
+          postList: ['some', 'post', 'list'],
           status: 'some-other-status',
           page: 10,
         },
-        payload: 'existing tag',
+        payload: 2,
         expected: {
+          searchTags: [
+            { id: 1, name: 'some tag', isActive: false },
+            { id: 2, name: 'some other tag', isActive: false },
+            { id: 3, name: 'another tag', isActive: true },
+          ],
           postList: [],
-          searchTags: ['other existing tag'],
           status: 'loading',
           page: 1,
         },
@@ -493,6 +486,33 @@ describe('state/page/selectors', () => {
         otherKey: 'some other value',
       }),
       'baz',
+    )
+  })
+
+  it('getActiveSearchTagsIds()', () => {
+    assert.deepEqual(
+      fromPage.getActiveSearchTagsIds({
+        searchTags: [
+          { id: 1, name: 'some tag', isActive: true },
+          { id: 2, name: 'some other tag', isActive: true },
+          { id: 3, name: 'another tag', isActive: true },
+        ],
+        otherKey: 'some other value',
+      }),
+      [1, 2, 3],
+    )
+
+    assert.deepEqual(
+      fromPage.getActiveSearchTagsIds({
+        searchTags: [
+          { id: 1, name: 'some tag', isActive: false },
+          { id: 2, name: 'some other tag', isActive: true },
+          { id: 3, name: 'another tag', isActive: false },
+          { id: 4, name: 'new tag', isActive: true },
+        ],
+        otherKey: 'some other value',
+      }),
+      [2, 4],
     )
   })
 

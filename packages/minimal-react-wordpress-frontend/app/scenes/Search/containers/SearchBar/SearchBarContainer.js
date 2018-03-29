@@ -6,9 +6,10 @@ import {
   getIsSearchAnimationDone,
   getSearchKeyword,
 } from 'app/state'
+
 import { setSearchKeyword } from 'app/state/page'
 import { toggleSearch } from 'app/state/ui'
-import withViewport from 'app/containers/withViewport'
+import withViewport from 'app/hoc/withViewport'
 import SearchBar from './SearchBar'
 
 const SearchBarContainer = compose(
