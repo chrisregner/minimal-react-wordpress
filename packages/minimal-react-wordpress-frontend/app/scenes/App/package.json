@@ -1,6 +1,6 @@
 {
-	"name:": "AppContainer",
+	"name:": "App",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./AppContainer.js"
+	"main": "./App.js"
 }

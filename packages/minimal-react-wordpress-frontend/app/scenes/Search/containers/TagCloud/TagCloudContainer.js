@@ -1,8 +1,13 @@
 import { connect } from 'react-redux'
-import { compose, mapProps } from 'recompose'
+import { compose, mapProps, lifecycle } from 'recompose'
 
+import {
+  toggleSearchTag,
+  fetchTags,
+  resetPage,
+  fetchPostList,
+} from 'app/state/page'
 import { getSearchTags } from 'app/state'
-import { toggleSearchTag } from 'app/state/page'
 import TagCloud from 'app/components/TagCloud'
 
 const TagCloudContainer = compose(
@@ -10,8 +15,20 @@ const TagCloudContainer = compose(
     state => ({
       tags: getSearchTags(state),
     }),
-    { toggleSearchTag }
+    dispatch => ({
+      toggleSearchTag: (tagId) => {
+        dispatch(toggleSearchTag(tagId))
+        dispatch(resetPage())
+        dispatch(fetchPostList())
+      },
+      fetchTags: () => dispatch(fetchTags()),
+    })
   ),
+  lifecycle({
+    componentDidMount () {
+      this.props.fetchTags()
+    },
+  }),
   mapProps(({ tags, toggleSearchTag }) => ({
     tags: tags && tags.map(tag => ({
       ...tag,

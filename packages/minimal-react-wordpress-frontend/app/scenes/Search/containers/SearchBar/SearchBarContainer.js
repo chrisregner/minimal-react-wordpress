@@ -7,7 +7,12 @@ import {
   getSearchKeyword,
 } from 'app/state'
 
-import { setSearchKeyword } from 'app/state/page'
+import {
+  setSearchKeyword,
+  resetPage,
+  fetchPostList,
+} from 'app/state/page'
+
 import { toggleSearch } from 'app/state/ui'
 import withViewport from 'app/hoc/withViewport'
 import SearchBar from './SearchBar'
@@ -21,7 +26,14 @@ const SearchBarContainer = compose(
       canSearchFocus: getIsSearchVisible(state) && getIsSearchAnimationDone(state),
       searchKeyword: getSearchKeyword(state),
     }),
-    { toggleSearch, setSearchKeyword }
+    dispatch => ({
+      toggleSearch: () => dispatch(toggleSearch()),
+      setSearchKeyword: (keyword) => {
+        dispatch(setSearchKeyword(keyword))
+        dispatch(resetPage())
+        dispatch(fetchPostList())
+      },
+    })
   ),
   lifecycle({
     componentDidUpdate: function () {

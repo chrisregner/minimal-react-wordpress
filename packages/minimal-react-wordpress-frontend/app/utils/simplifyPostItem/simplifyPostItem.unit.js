@@ -2,7 +2,6 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import path from 'ramda/src/path'
 import pipe from 'ramda/src/pipe'
-import pick from 'ramda/src/pick'
 
 import { generateRawPostItem } from 'app/test'
 import simplifyPostItem from './simplifyPostItem'
@@ -112,7 +111,7 @@ describe('utils/simplifyPostItem()', () => {
     assert.deepEqual(actual, expected)
   })
 
-  it('should return the tags, if any, along with the post’s basic details', () => {
+  it('should return the tag ids, if any, along with the post’s basic details', () => {
     const post = generateRawPostItem({ hasTags: true })
     const tagsPath = path(['_embedded', 'wp:term', 1])
 
@@ -122,7 +121,7 @@ describe('utils/simplifyPostItem()', () => {
       title: post.title.rendered,
       content: post.content.rendered,
       excerpt: post.excerpt.rendered,
-      tags: tagsPath(post).map(pick(['id', 'name'])),
+      tags: tagsPath(post).map(tag => tag.id),
     }
 
     const actual = simplifyPostItem(post)

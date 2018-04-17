@@ -53,4 +53,21 @@ describe('api/wp-api', () => {
       testWith('some other tags')
     })
   })
+
+  describe('apiFetchNavLinks()', () => {
+    it('should fetch tags with correct params and return the response', () => {
+      const testWith = (response) => {
+        const getTd = td.replace(axios, 'get')
+        const expectedArgs = 'http://localhost/minimal-react-wordpress/wp-json/wp-api-menus/v2/menu-locations/primary'
+
+        td.when(getTd(expectedArgs))
+          .thenReturn(response)
+
+        assert.equal(fromWpApi.apiFetchNavLinks(), response)
+      }
+
+      testWith('some response')
+      testWith('some other response')
+    })
+  })
 })

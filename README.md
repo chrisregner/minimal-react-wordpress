@@ -1,3 +1,15 @@
+
+- post page
+  - prev/next posts???
+- custom page
+- routes
+- 404
+- nav
+- misc
+  - x browser test
+
+---
+
 # parts/features
 
 - posts
@@ -34,6 +46,7 @@
 # bug
 
 - When you go directly to search page with search url params, the search params won't be recognized by the app. They have to be inputted through the app itself
+- when fetching correct content when clearing search
 
 ---
 

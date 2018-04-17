@@ -1,6 +1,7 @@
 import { handleActions, createAction } from 'redux-actions'
 
 import {
+  RESET_PAGE,
   FETCH_POST_LIST,
   FETCH_MORE_POST_LIST,
   FETCH_TAGS,
@@ -10,6 +11,7 @@ import {
   CLEAR_SEARCH,
   ADD_POST_LIST,
   SET_ERROR,
+  SET_SEARCH_PARAMS,
 } from 'app/state/actionTypes'
 
 /**
@@ -17,14 +19,12 @@ import {
  * ...
  */
 
-const defaultState = {}
+const defaultState = { postList: [], searchTags: [] }
 const pageReducer = handleActions({
-  [FETCH_POST_LIST]: state => ({
+  [RESET_PAGE]: ({ ...state }) => ({
     ...state,
     postList: [],
     page: 1,
-    searchKeyword: '',
-    searchTags: [],
     status: 'loading',
   }),
 
@@ -36,10 +36,7 @@ const pageReducer = handleActions({
 
   [SET_SEARCH_KEYWORD]: (state, { payload }) => ({
     ...state,
-    postList: [],
     searchKeyword: payload,
-    page: 1,
-    status: 'loading',
   }),
 
   [SET_SEARCH_TAGS]: (state, { payload }) => ({
@@ -49,21 +46,26 @@ const pageReducer = handleActions({
 
   [TOGGLE_SEARCH_TAG]: ({ searchTags, ...state }, { payload }) => ({
     ...state,
-    postList: [],
-    page: 1,
-    status: 'loading',
     searchTags: searchTags.map(tag => tag.id === payload
       ? { ...tag, isActive: !tag.isActive }
       : tag),
   }),
 
-  [CLEAR_SEARCH]: state => ({
+  [CLEAR_SEARCH]: ({ searchTags, ...state }) => ({
     ...state,
-    postList: [],
-    page: 1,
     searchKeyword: '',
-    searchTags: [],
-    status: 'loading',
+    searchTags: searchTags.map(tag => ({
+      ...tag, isActive: false,
+    })),
+  }),
+
+  [SET_SEARCH_PARAMS]: (state, { payload = {} }) => ({
+    ...state,
+    searchKeyword: payload.searchKeyword || '',
+    searchTags: state.searchTags.map(tag => ({
+      ...tag,
+      isActive: !!((payload.searchTags || []).includes(tag.id)),
+    })),
   }),
 
   [ADD_POST_LIST]: ({ postList, page, ...state }, { payload }) => ({
@@ -89,26 +91,39 @@ const pageReducer = handleActions({
 }, defaultState)
 
 /* Action Creators */
+export const resetPage = createAction(RESET_PAGE)
 export const fetchPostList = createAction(FETCH_POST_LIST)
 export const fetchMorePostList = createAction(FETCH_MORE_POST_LIST)
 export const fetchTags = createAction(FETCH_TAGS)
 export const setSearchKeyword = createAction(SET_SEARCH_KEYWORD)
 export const setSearchTags = createAction(SET_SEARCH_TAGS)
+export const setSearchParams = createAction(SET_SEARCH_PARAMS)
 export const toggleSearchTag = createAction(TOGGLE_SEARCH_TAG)
 export const clearSearch = createAction(CLEAR_SEARCH)
 export const addPostList = createAction(ADD_POST_LIST)
 export const setError = createAction(SET_ERROR)
 
 /* Selectors */
-export const getPostList = state => state.postList
+export const getPostListWithTags = ({ postList, searchTags }) =>
+  postList.map(({ tags, ...postItem }) => tags
+    ? {
+      tags: tags.map(postTagId =>
+        searchTags.find(tag => tag.id === postTagId)
+      ),
+      ...postItem,
+    }
+    : postItem
+  )
+
 export const getError = state => state.error
 export const getPage = state => state.page
 export const getSearchKeyword = state => state.searchKeyword
 export const getSearchTags = state => state.searchTags
-export const getActiveSearchTagsIds = state => state
-  .searchTags
-  .filter(tag => tag.isActive)
-  .map(tag => tag.id)
+export const getActiveSearchTagsIds = state =>
+  state
+    .searchTags
+    .filter(tag => tag.isActive)
+    .map(tag => tag.id)
 export const getStatus = state => state.status
 
 /* Internal Functions */

@@ -1,38 +1,26 @@
 import { connect } from 'react-redux'
 import { lifecycle, setDisplayName, compose } from 'recompose'
 
-import {
-  fetchPostList,
-  fetchMorePostList,
-  clearSearch,
-} from 'app/state/page'
+import { clearSearch, resetPage, fetchPostList } from 'app/state/page'
 
-import {
-  getPostList,
-  getError,
-  getStatus,
-} from 'app/state'
+import withPostListData from 'app/hoc/withPostListData'
+import DumbPostList from 'app/components/PostList'
 
-import PostList from './PostList'
-
-const enhance = compose(
+const PostList = compose(
   setDisplayName('PostListContainer'),
-  connect(
-    state => ({
-      postList: getPostList(state),
-      error: getError(state),
-      status: getStatus(state),
-    }),
-    ({
-      loadMore: fetchMorePostList,
-      fetchPostList, clearSearch,
-    })
-  ),
+  connect(null, dispatch => ({
+    fetchFirstPosts: () => {
+      dispatch(clearSearch())
+      dispatch(resetPage())
+      dispatch(fetchPostList())
+    },
+  })),
+  withPostListData,
   lifecycle({
     componentDidMount () {
-      this.props.fetchPostList()
+      this.props.fetchFirstPosts()
     },
   }),
-)
+)(DumbPostList)
 
-export default enhance(PostList)
+export default PostList

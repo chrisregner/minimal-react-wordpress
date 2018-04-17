@@ -10,9 +10,12 @@ const TagCloud = ({ tags }) => (tags && tags.length)
     {tags.map((tag, i) =>
       <span data-test='tag-item' key={shortid.generate()}>
         <a
-          href='#'
+          href=''
           data-test='link'
-          onClick={tag.toggleTag}
+          onClick={(ev) => {
+            tag.toggleTag()
+            ev.preventDefault()
+          }}
           className={tag.isActive ? activeClass : inactiveClass}
         >
           <span data-test='name'>{tag.name}</span>

@@ -1,6 +1,0 @@
-{
-  "name:": "getLocation",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./getLocation.js"
-}

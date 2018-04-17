@@ -1,29 +1,28 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
+import * as actionTypes from 'app/state/actionTypes'
 import pageReducer, * as fromPage from './page'
 
 describe('state/page/reducer', () => {
   it('should return the correct default state', () => {
-    const expected = {}
+    const expected = { postList: [], searchTags: [] }
     assert.deepEqual(pageReducer(undefined, {}), expected)
   })
 
-  describe('FETCH_POST_LIST', () => {
-    it('should apply static changes correctly and delete other keys', () => {
+  describe('RESET_PAGE', () => {
+    it('should clear post list, set page to 1, set status to loading, and copy other keys', () => {
       const testWith = (passedInitState) => {
         const initState = { ...passedInitState, otherKey: 'otherValue' }
-        const actual = pageReducer(initState, fromPage.fetchPostList())
+        const actual = pageReducer(initState, fromPage.resetPage())
         const expected = {
           postList: [],
           page: 1,
           status: 'loading',
-          searchKeyword: '',
-          searchTags: [],
           otherKey: 'otherValue',
         }
 
-        assert.deepEqual(actual, expected)
+        assert.deepInclude(actual, expected)
       }
 
       testWith({})
@@ -31,9 +30,16 @@ describe('state/page/reducer', () => {
         postList: ['some post'],
         page: 2,
         status: 'some-other-status',
-        searchKeyword: 'some search keyword',
-        searchTags: ['some', 'search', 'tags'],
       })
+    })
+  })
+
+  describe('FETCH_POST_LIST', () => {
+    it('should have an action creator', () => {
+      assert.deepEqual(
+        fromPage.fetchPostList(),
+        { type: actionTypes.FETCH_POST_LIST }
+      )
     })
   })
 
@@ -70,36 +76,22 @@ describe('state/page/reducer', () => {
       assert.deepInclude(actual, expected)
     }
 
-    it('should set the searchKeyword, apply static changes correctly, and save other keys', () => {
+    it('should set the searchKeyword and save other keys', () => {
       testWith({
         initState: {},
         payload: 'some search keyword',
-        expected: {
-          postList: [],
-          searchKeyword: 'some search keyword',
-          status: 'loading',
-          page: 1,
-        },
+        expected: { searchKeyword: 'some search keyword' },
       })
 
       testWith({
-        initState: {
-          searchKeyword: 'old search keyword',
-          status: 'some-other-status',
-          page: 10,
-        },
+        initState: { searchKeyword: 'old search keyword' },
         payload: 'new search keyword',
-        expected: {
-          postList: [],
-          searchKeyword: 'new search keyword',
-          status: 'loading',
-          page: 1,
-        },
+        expected: { searchKeyword: 'new search keyword' },
       })
     })
   })
 
-  describe('SET_TAGS', () => {
+  describe('SET_SEARCH_TAGS', () => {
     it('should save tags with each having isActive property set to false, and save other keys', () => {
       const testWith = ({ initState: passedInitState, payload }) => {
         const initState = { ...passedInitState, otherKey: 'otherValue' }
@@ -152,9 +144,6 @@ describe('state/page/reducer', () => {
             { id: 2, name: 'some other tag', isActive: false },
             { id: 3, name: 'another tag', isActive: false },
           ],
-          postList: [],
-          status: 'loading',
-          page: 1,
         },
       })
 
@@ -176,16 +165,104 @@ describe('state/page/reducer', () => {
             { id: 2, name: 'some other tag', isActive: false },
             { id: 3, name: 'another tag', isActive: true },
           ],
-          postList: [],
-          status: 'loading',
-          page: 1,
+        },
+      })
+    })
+  })
+
+  describe('SET_SEARCH_PARAMS', () => {
+    it('should copy other keys', () => {
+      const testWith = (initState) => {
+        const actual = pageReducer(initState, fromPage.setSearchParams())
+        assert.deepInclude(actual, initState)
+      }
+
+      testWith({ searchTags: [], somekey: 'some value' })
+      testWith({ searchTags: [], somekey: 'some value', someOtherKey: 'some other value' })
+    })
+
+    it('should set the keyword, if any', () => {
+      const testWith = ({ initState, payload, expected }) => {
+        const actual = pageReducer(initState, fromPage.setSearchParams(payload))
+        assert.deepInclude(actual, expected)
+      }
+
+      testWith({
+        initState: { searchTags: [] },
+        payload: { searchKeyword: 'some keyword' },
+        expected: { searchKeyword: 'some keyword' },
+      })
+
+      testWith({
+        initState: { searchTags: [], searchKeyword: 'some old keyword' },
+        payload: { searchKeyword: 'some new keyword' },
+        expected: { searchKeyword: 'some new keyword' },
+      })
+    })
+
+    it('should set the keyword to empty string, if passed keyword is falsy', () => {
+      const testWith = ({ initState, payload, expected }) => {
+        const actual = pageReducer(initState, fromPage.setSearchParams(payload))
+        assert.deepInclude(actual, expected)
+      }
+
+      testWith({
+        initState: { searchTags: [] },
+        payload: { searchKeyword: undefined },
+        expected: { searchKeyword: '' },
+      })
+
+      testWith({
+        initState: { searchTags: [], searchKeyword: 'some old keyword' },
+        payload: { searchKeyword: null },
+        expected: { searchKeyword: '' },
+      })
+    })
+
+    it('should activate the any of the passed tags, and deactivate the rest', () => {
+      const testWith = ({ initState, payload, expected }) => {
+        const actual = pageReducer(initState, fromPage.setSearchParams(payload))
+        assert.deepInclude(actual, expected)
+      }
+
+      testWith({
+        initState: {
+          searchTags: [
+            { id: 1, name: 'first-tag', isActive: false, count: 1 },
+            { id: 2, name: 'second-tag', isActive: false, count: 4 },
+          ],
+        },
+        payload: { searchTags: [1, 2] },
+        expected: {
+          searchTags: [
+            { id: 1, name: 'first-tag', isActive: true, count: 1 },
+            { id: 2, name: 'second-tag', isActive: true, count: 4 },
+          ],
+        },
+      })
+
+      testWith({
+        initState: {
+          searchTags: [
+            { id: 1, name: 'first-tag', isActive: true, count: 1 },
+            { id: 2, name: 'second-tag', isActive: true, count: 4 },
+            { id: 3, name: 'third-tag', isActive: false, count: 3 },
+          ],
+        },
+        payload: { searchTags: [1, 3] },
+        expected: {
+          searchTags: [
+            { id: 1, name: 'first-tag', isActive: true, count: 1 },
+            { id: 2, name: 'second-tag', isActive: false, count: 4 },
+            { id: 3, name: 'third-tag', isActive: true, count: 3 },
+          ],
         },
       })
     })
   })
 
   describe('CLEAR_SEARCH', () => {
-    it('should clear search keys, apply static changes correctly, and save other keys', () => {
+    it('should clear search keyword and save other keys', () => {
       const testWith = ({
         initState: passedInitState,
         expected: passedExpected,
@@ -197,30 +274,74 @@ describe('state/page/reducer', () => {
       }
 
       testWith({
-        initState: {},
-        expected: {
-          postList: [],
-          page: 1,
-          searchKeyword: '',
+        initState: { searchTags: [] },
+        expected: { searchKeyword: '' },
+      })
+
+      testWith({
+        initState: {
+          searchKeyword: 'some search keyword',
           searchTags: [],
-          status: 'loading',
+        },
+        expected: { searchKeyword: '' },
+      })
+    })
+
+    it('should reset tags properly, if any', () => {
+      const testWith = ({ initState, expected }) => {
+        const actual = pageReducer(initState, fromPage.clearSearch())
+        assert.deepInclude(actual, expected)
+      }
+
+      testWith({
+        initState: {
+          searchTags: [
+            { id: 1, name: 'foo', isActive: true, count: 1 },
+            { id: 2, name: 'bar', isActive: true, count: 4 },
+            { id: 3, name: 'baz', isActive: true, count: 3 },
+          ],
+        },
+        expected: {
+          searchTags: [
+            { id: 1, name: 'foo', isActive: false, count: 1 },
+            { id: 2, name: 'bar', isActive: false, count: 4 },
+            { id: 3, name: 'baz', isActive: false, count: 3 },
+          ],
         },
       })
 
       testWith({
         initState: {
-          postList: ['some', 'post'],
-          page: 10,
-          searchKeyword: 'some search keyword',
-          searchTags: ['some', 'search', 'tag'],
-          status: 'some-other-status',
+          searchTags: [
+            { id: 1, name: 'foo', isActive: false, count: 1 },
+            { id: 2, name: 'bar', isActive: true, count: 4 },
+            { id: 3, name: 'baz', isActive: false, count: 3 },
+            { id: 4, name: 'ketchup', isActive: true, count: 1 },
+          ],
         },
         expected: {
-          postList: [],
-          page: 1,
-          searchKeyword: '',
+          searchTags: [
+            { id: 1, name: 'foo', isActive: false, count: 1 },
+            { id: 2, name: 'bar', isActive: false, count: 4 },
+            { id: 3, name: 'baz', isActive: false, count: 3 },
+            { id: 4, name: 'ketchup', isActive: false, count: 1 },
+          ],
+        },
+      })
+    })
+
+    it('should just copy tags, if tags is just an empty array', () => {
+      const testWith = ({ initState, expected }) => {
+        const actual = pageReducer(initState, fromPage.clearSearch())
+        assert.deepInclude(actual, expected)
+      }
+
+      testWith({
+        initState: {
           searchTags: [],
-          status: 'loading',
+        },
+        expected: {
+          searchTags: [],
         },
       })
     })
@@ -362,7 +483,7 @@ describe('state/page/reducer', () => {
   })
 
   it('SET_ERROR', () => {
-    it('should set the error, apply static changes correctly, and save other keys', () => {
+    it('should set the error and status, and save other keys', () => {
       const testWith = ({
         initState: passedInitState,
         expected: passedExpected,
@@ -399,22 +520,55 @@ describe('state/page/reducer', () => {
 })
 
 describe('state/page/selectors', () => {
-  it('getPostList()', () => {
-    assert.equal(
-      fromPage.getPostList({
-        postList: 'foo',
-        otherKey: 'some other value',
-      }),
-      'foo',
-    )
+  describe('getPostListWithTags()', () => {
+    it('should just get the posts without tags', () => {
+      assert.deepEqual(
+        fromPage.getPostListWithTags({
+          postList: [
+            { title: 'first post' },
+            { title: 'second post' },
+          ],
+          otherKey: 'some other value',
+        }),
+        [
+          { title: 'first post' },
+          { title: 'second post' },
+        ],
+      )
+    })
 
-    assert.equal(
-      fromPage.getPostList({
-        postList: 'baz',
-        otherKey: 'some other value',
-      }),
-      'baz',
-    )
+    it('should also get the tags of the posts if any', () => {
+      assert.deepEqual(
+        fromPage.getPostListWithTags({
+          postList: [
+            { title: 'first post', tags: [1, 2] },
+            { title: 'second post', tags: [2, 3] },
+          ],
+          searchTags: [
+            { id: 1, name: 'tag-one' },
+            { id: 2, name: 'tag-two' },
+            { id: 3, name: 'tag-three' },
+          ],
+          otherKey: 'some other value',
+        }),
+        [
+          {
+            title: 'first post',
+            tags: [
+              { id: 1, name: 'tag-one' },
+              { id: 2, name: 'tag-two' },
+            ],
+          },
+          {
+            title: 'second post',
+            tags: [
+              { id: 2, name: 'tag-two' },
+              { id: 3, name: 'tag-three' },
+            ],
+          },
+        ],
+      )
+    })
   })
 
   it('getError()', () => {

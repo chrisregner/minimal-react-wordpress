@@ -69,17 +69,21 @@ describe('scenes/Search/containers/TagCloud/TagCloudComponent', () => {
     })
   })
 
-  it('should call toggleTag() respectively when a tag is clicked', () => {
+  it('should call ev.preventDefault() and toggleTag() respectively when a tag is clicked', () => {
     const tags = generateTagsProp()
     const props = { tags }
     const tagLinks = find(setup({ props }), ['tag-item', 'link'])
+    const preventDefaultTd = td.func()
 
     assert.equal(tagLinks.length, 10)
     tagLinks.forEach((tagLink, i) => {
       const toggleTagTd = tags[i].toggleTag
       td.verify(toggleTagTd(), { times: 0, ignoreExtraArgs: true })
-      tagLink.simulate('click')
+      td.verify(preventDefaultTd(), { times: 0, ignoreExtraArgs: true })
+      tagLink.simulate('click', { preventDefault: preventDefaultTd })
       td.verify(toggleTagTd(), { times: 1, ignoreExtraArgs: true })
+      td.verify(preventDefaultTd(), { times: 1, ignoreExtraArgs: true })
+      td.reset()
     })
   })
 

@@ -14,13 +14,12 @@ import * as fromState from 'app/state'
 import * as fromPage from './page'
 
 describe('state/page/saga', () => {
-  let fromPageSaga, historyTd, getLocationTd
+  let fromPageSaga, historyTd, resourceObservableTd
 
   before(() => {
     td.reset()
     historyTd = td.replace('../../history').default
-    getLocationTd = td.replace('../../utils/getLocation').default
-
+    resourceObservableTd = td.replace('../../services/resourceObservable').default
     fromPageSaga = require('./pageSaga')
   })
 
@@ -90,12 +89,15 @@ describe('state/page/saga', () => {
       ])
     })
 
-    it('should fetch post list with some parameters from state and put any error', () => {
+    it('should fetch post list with some parameters from state and put any error', async () => {
       // With page = 1, totalpages = 1, some error
-      const testVariationOne = () => {
+      const testVariationOne = async () => {
+        const consoleErrorTd = td.replace(console, 'error')
         const e = new Error('some error')
 
-        return expectSaga(fromPageSaga.fetchPostList)
+        td.verify(consoleErrorTd(), { times: 0, ignoreExtraArgs: true })
+
+        await expectSaga(fromPageSaga.fetchPostList)
           .provide([
             [select(fromState.getPage), 1],
             [select(fromState.getSearchKeyword), undefined],
@@ -108,13 +110,18 @@ describe('state/page/saga', () => {
           ])
           .put(fromPage.setError(e))
           .run()
+
+        td.verify(consoleErrorTd(e), { times: 1 })
       }
 
       // With page = 5, totalpages = 10, some search keywords, some other error
-      const testVariationTwo = () => {
+      const testVariationTwo = async () => {
+        const consoleErrorTd = td.replace(console, 'error')
         const e = new Error('some other error')
 
-        return expectSaga(fromPageSaga.fetchPostList)
+        td.verify(consoleErrorTd(), { times: 0, ignoreExtraArgs: true })
+
+        await expectSaga(fromPageSaga.fetchPostList)
           .provide([
             [select(fromState.getPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
@@ -127,21 +134,18 @@ describe('state/page/saga', () => {
           ])
           .put(fromPage.setError(e))
           .run()
+
+        td.verify(consoleErrorTd(e), { times: 1 })
       }
 
-      return Promise.all([
-        testVariationOne(),
-        testVariationOne(),
-        testVariationOne(),
-        testVariationTwo(),
-        testVariationTwo(),
-      ])
+      await testVariationOne()
+      await testVariationTwo()
     })
   })
 
   describe('*syncRoute()', () => {
     it('should push history to home if there is NO search query, current page is search, and there is NO pre-search page', () => {
-      td.when(getLocationTd()).thenReturn({ pathname: '/search' })
+      td.when(historyTd.getLocation()).thenReturn({ pathname: '/search' })
       td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
       return expectSaga(fromPageSaga.syncRoute)
@@ -159,7 +163,7 @@ describe('state/page/saga', () => {
     it('should push history to search if there is search query and current page is NOT search', () => {
       // with some keyword
       const testVariationOne = () => {
-        td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
+        td.when(historyTd.getLocation()).thenReturn({ pathname: '/some/page' })
         td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
         return expectSaga(fromPageSaga.syncRoute)
@@ -177,7 +181,7 @@ describe('state/page/saga', () => {
 
       // with some tags
       const testVariationTwo = () => {
-        td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
+        td.when(historyTd.getLocation()).thenReturn({ pathname: '/some/page' })
         td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
         return expectSaga(fromPageSaga.syncRoute)
@@ -195,7 +199,7 @@ describe('state/page/saga', () => {
 
       // with some keyword and tags
       const testVariationThree = () => {
-        td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
+        td.when(historyTd.getLocation()).thenReturn({ pathname: '/some/page' })
         td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
         return expectSaga(fromPageSaga.syncRoute)
@@ -225,7 +229,7 @@ describe('state/page/saga', () => {
     it('should replace history with updated query if there is search query and current page is search', () => {
       // with some keyword
       const testVariationOne = () => {
-        td.when(getLocationTd()).thenReturn({ pathname: '/search' })
+        td.when(historyTd.getLocation()).thenReturn({ pathname: '/search' })
         td.verify(historyTd.replace(), { times: 0, ignoreExtraArgs: true })
 
         return expectSaga(fromPageSaga.syncRoute)
@@ -243,7 +247,7 @@ describe('state/page/saga', () => {
 
       // with some tags
       const testVariationTwo = () => {
-        td.when(getLocationTd()).thenReturn({ pathname: '/search' })
+        td.when(historyTd.getLocation()).thenReturn({ pathname: '/search' })
         td.verify(historyTd.replace(), { times: 0, ignoreExtraArgs: true })
 
         return expectSaga(fromPageSaga.syncRoute)
@@ -261,7 +265,7 @@ describe('state/page/saga', () => {
 
       // with some keyword and tags
       const testVariationThree = () => {
-        td.when(getLocationTd()).thenReturn({ pathname: '/search' })
+        td.when(historyTd.getLocation()).thenReturn({ pathname: '/search' })
         td.verify(historyTd.replace(), { times: 0, ignoreExtraArgs: true })
 
         return expectSaga(fromPageSaga.syncRoute)
@@ -293,7 +297,7 @@ describe('state/page/saga', () => {
       const testVariationOne = [
         // sets pre-search route
         () => {
-          td.when(getLocationTd()).thenReturn({ pathname: '/some/page' })
+          td.when(historyTd.getLocation()).thenReturn({ pathname: '/some/page' })
 
           return expectSaga(fromPageSaga.syncRoute)
             .provide([
@@ -305,7 +309,7 @@ describe('state/page/saga', () => {
         // asserts that history goes back to pre-search route
         () => {
           td.reset()
-          td.when(getLocationTd()).thenReturn({ pathname: '/search' })
+          td.when(historyTd.getLocation()).thenReturn({ pathname: '/search' })
           td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
           return expectSaga(fromPageSaga.syncRoute)
@@ -326,7 +330,7 @@ describe('state/page/saga', () => {
       const testVariationTwo = [
         // sets pre-search route
         () => {
-          td.when(getLocationTd()).thenReturn({ pathname: '/some/other/page' })
+          td.when(historyTd.getLocation()).thenReturn({ pathname: '/some/other/page' })
 
           return expectSaga(fromPageSaga.syncRoute)
             .provide([
@@ -338,7 +342,7 @@ describe('state/page/saga', () => {
         // asserts that history goes back to pre-search route
         () => {
           td.reset()
-          td.when(getLocationTd()).thenReturn({ pathname: '/search' })
+          td.when(historyTd.getLocation()).thenReturn({ pathname: '/search' })
           td.verify(historyTd.push(), { times: 0, ignoreExtraArgs: true })
 
           return expectSaga(fromPageSaga.syncRoute)
@@ -358,38 +362,39 @@ describe('state/page/saga', () => {
       return pipeP(...testVariationOne, ...testVariationTwo)()
     })
 
-    it('should put any error', () => {
-      const testVariationOne = () => {
-        const e = new Error('some error')
+    it('should log and put any error', async () => {
+      const testWith = async (error) => {
+        const consoleErrorTd = td.replace(console, 'error')
+        td.verify(consoleErrorTd(), { times: 0, ignoreExtraArgs: true })
 
-        return expectSaga(fromPageSaga.syncRoute)
+        await expectSaga(fromPageSaga.syncRoute)
           .provide([
-            [select(fromState.getSearchKeyword), throwError(e)],
+            [select(fromState.getSearchKeyword), throwError(error)],
           ])
-          .put(fromPage.setError(e))
+          .put(fromPage.setError(error))
           .run()
+
+        td.verify(consoleErrorTd(error), { times: 1 })
+        td.reset()
       }
 
-      const testVariationTwo = () => {
-        const e = new Error('some other error')
-
-        return expectSaga(fromPageSaga.syncRoute)
-          .provide([
-            [select(fromState.getSearchKeyword), throwError(e)],
-          ])
-          .put(fromPage.setError(e))
-          .run()
-      }
-
-      return Promise.all([
-        testVariationOne(),
-        testVariationOne(),
-        testVariationTwo(),
-      ])
+      await testWith(new Error('some error'))
+      await testWith(new Error('some other error'))
     })
   })
 
   describe('*fetchTags', () => {
+    it('should call ro.subscribe() with correct args', () => {
+      return expectSaga(fromPageSaga.fetchTags)
+        .provide([
+          [call(api.apiFetchTags), { data: [] }],
+        ])
+        .run()
+        .then(() => {
+          td.verify(resourceObservableTd.resolveResource('tags'))
+        })
+    })
+
     it('should fetch tags and put the response', () => {
       const rawTags = generateRawTags()
       return expectSaga(fromPageSaga.fetchTags)
@@ -420,7 +425,7 @@ describe('state/page/saga', () => {
     })
   })
 
-  describe('*fetchTags', () => {
+  describe('*fetchNavLinks', () => {
     it('should fetch nav links and put the response')
     it('should fetch nav links and log any error')
   })
