@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import MainSection from 'app/components/MainSection'
+import ErrorComponent from 'app/components/ErrorComponent'
 import Warning from 'app/components/Warning'
 import PostItem from 'app/components/PostItem'
 
@@ -34,13 +35,7 @@ const PostList = ({ postList, loadMore, clearSearch, error, status }) =>
               Loading...
           </button>
         case 'error':
-          return <Warning data-test='error'>
-            <p className='pb2'>
-                The following <strong>error has occured</strong>.
-                Please try reloading or visiting the site again later.
-            </p>
-            <pre className='color-muted'>{error.message}</pre>
-          </Warning>
+          return <ErrorComponent data-test='error' error={error} />
         case 'no-more-match':
           return <button className='button-secondary' data-test='no-more-match-msg'>
               No More Match

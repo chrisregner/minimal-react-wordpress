@@ -23,7 +23,7 @@ const SearchResults = compose(
       dispatch(setSearchParams(searchParams))
       dispatch(fetchPostList())
     },
-    clearSearch: () => dispatch(clearSearch()),
+    clearSearchWithoutFetch: () => dispatch(clearSearch()),
   })),
 
   withPostListData,
@@ -45,7 +45,7 @@ const SearchResults = compose(
       this.props.fetchSearchResults(searchParams)
     },
     componentWillUnmount () {
-      this.props.clearSearch()
+      this.props.clearSearchWithoutFetch()
     },
   }),
 )(DumbPostList)

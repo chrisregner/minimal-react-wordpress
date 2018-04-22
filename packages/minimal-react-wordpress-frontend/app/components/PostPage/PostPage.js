@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import MainSection from 'app/components/MainSection'
-import Warning from 'app/components/Warning'
+import ErrorComponent from 'app/components/ErrorComponent'
 import PostItem from 'app/components/PostItem'
 
 const PostPage = ({ post, status, error }) =>
@@ -54,13 +54,7 @@ const PostPage = ({ post, status, error }) =>
         case 'loaded-post':
           return null
         case 'error':
-          return <Warning data-test='error'>
-            <p className='pb2'>
-                The following <strong>error has occured</strong>.
-                Please try reloading or visiting the site again later.
-            </p>
-            <pre className='color-muted'>{error.message}</pre>
-          </Warning>
+          return <ErrorComponent data-test='error' error={error} />
       }
     }}
   />

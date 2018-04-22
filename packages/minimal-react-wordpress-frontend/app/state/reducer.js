@@ -13,8 +13,9 @@ const rootReducer = combineReducers({
 // page selectors
 export const getPostExcerptsWithTags = ({ page }) => fromPage.getPostExcerptsWithTags(page)
 export const getPostWithTags = ({ page }) => fromPage.getPostWithTags(page)
-export const getError = ({ page }) => fromPage.getError(page)
+export const getPostListPage = ({ page }) => fromPage.getPostListPage(page)
 export const getPage = ({ page }) => fromPage.getPage(page)
+export const getError = ({ page }) => fromPage.getError(page)
 export const getSearchKeyword = ({ page }) => fromPage.getSearchKeyword(page)
 export const getSearchTags = ({ page }) => fromPage.getSearchTags(page)
 export const getActiveSearchTagsIds = ({ page }) => fromPage.getActiveSearchTagsIds(page)

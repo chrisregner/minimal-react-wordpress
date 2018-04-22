@@ -40,7 +40,7 @@ describe('state/page/saga', () => {
 
         return expectSaga(fromPageSaga.fetchPostList)
           .provide([
-            [select(fromState.getPage), 1],
+            [select(fromState.getPostListPage), 1],
             [select(fromState.getSearchKeyword), undefined],
             [select(fromState.getActiveSearchTagsIds), undefined],
             [call(api.fetchPostList, {
@@ -68,7 +68,7 @@ describe('state/page/saga', () => {
 
         return expectSaga(fromPageSaga.fetchPostList)
           .provide([
-            [select(fromState.getPage), 5],
+            [select(fromState.getPostListPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
             [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
             [call(api.fetchPostList, {
@@ -100,7 +100,7 @@ describe('state/page/saga', () => {
 
         await expectSaga(fromPageSaga.fetchPostList)
           .provide([
-            [select(fromState.getPage), 1],
+            [select(fromState.getPostListPage), 1],
             [select(fromState.getSearchKeyword), undefined],
             [select(fromState.getActiveSearchTagsIds), undefined],
             [call(api.fetchPostList, {
@@ -124,7 +124,7 @@ describe('state/page/saga', () => {
 
         await expectSaga(fromPageSaga.fetchPostList)
           .provide([
-            [select(fromState.getPage), 5],
+            [select(fromState.getPostListPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
             [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
             [call(api.fetchPostList, {

@@ -1,4 +1,4 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects'
+import { call, put, takeLatest, select, fork } from 'redux-saga/effects'
 import qs from 'query-string'
 
 import {
@@ -28,7 +28,7 @@ import {
 } from './page'
 
 import {
-  getPage,
+  getPostListPage,
   getSearchKeyword,
   getActiveSearchTagsIds,
 } from 'app/state'
@@ -39,10 +39,48 @@ import simplifyPostList from 'app/utils/simplifyPostList'
 import simplifyTags from 'app/utils/simplifyTags'
 import history from 'app/history'
 
+export default function * pageSaga () {
+  yield takeLatest([
+    FETCH_POST_LIST,
+    FETCH_MORE_POST_LIST,
+    FETCH_POST,
+    FETCH_PAGE,
+  ], function * (action) {
+    // switch (true) {
+    //   case [FETCH_POST_LIST, FETCH_MORE_POST_LIST].includes(type):
+    //     yield fork(fetchPostList)
+    //     break
+    //   case FETCH_POST === type:
+    //     yield fork(fetchPost)
+    //     break
+    //   case FETCH_PAGE === type:
+    //     yield fork(fetchPage)
+    //     break
+    // }
+
+    if ([FETCH_POST_LIST, FETCH_MORE_POST_LIST].includes(action.type))
+      yield fork(fetchPostList, action)
+    else if (FETCH_POST === action.type)
+      yield fork(fetchPost, action)
+    else if (FETCH_PAGE === action.type)
+      yield fork(fetchPage, action)
+  })
+
+  yield takeLatest([
+    SET_SEARCH_KEYWORD,
+    TOGGLE_SEARCH_TAG,
+    CLEAR_SEARCH,
+  ], syncRoute)
+
+  yield takeLatest([
+    FETCH_SEARCH_TAGS,
+  ], fetchTags)
+}
+
 export function * fetchPostList (action) {
   try {
     const { data, headers } = yield call(apiFetchPostList, {
-      page: yield select(getPage),
+      page: yield select(getPostListPage),
       search: yield select(getSearchKeyword),
       tags: yield select(getActiveSearchTagsIds),
     })
@@ -133,29 +171,4 @@ export function * syncRoute () {
     console.error(e)
     yield put(setError(e))
   }
-}
-
-export default function * pageSaga () {
-  yield takeLatest([
-    FETCH_POST_LIST,
-    FETCH_MORE_POST_LIST,
-  ], fetchPostList)
-
-  yield takeLatest([
-    FETCH_POST,
-  ], fetchPost)
-
-  yield takeLatest([
-    SET_SEARCH_KEYWORD,
-    TOGGLE_SEARCH_TAG,
-    CLEAR_SEARCH,
-  ], syncRoute)
-
-  yield takeLatest([
-    FETCH_SEARCH_TAGS,
-  ], fetchTags)
-
-  yield takeLatest([
-    FETCH_PAGE,
-  ], fetchPage)
 }

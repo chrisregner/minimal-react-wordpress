@@ -10,7 +10,7 @@ import {
   generatePostItem,
 } from 'app/test'
 
-import Warning from 'app/components/Warning'
+import ErrorComponent from 'app/components/ErrorComponent'
 import PostItem from 'app/components/PostItem'
 import PostPage from './PostPage'
 
@@ -67,8 +67,8 @@ describe('components/PostPage', () => {
         'loader': 0,
         'post': 0,
         'error': [1, (errorWrapper) => {
-          assert.isTrue(errorWrapper.is(Warning), 'error should be a <Warning /> component')
-          assert.include(errorWrapper.dive().text(), error.message, 'error should render error message')
+          assert.isTrue(errorWrapper.is(ErrorComponent), 'error should be a <ErrorComponent />')
+          assert.equal(errorWrapper.prop('error'), error, 'error should pass the error as prop')
         }],
       })
     }

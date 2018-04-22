@@ -10,6 +10,7 @@ import {
 } from 'app/test'
 
 import Warning from 'app/components/Warning'
+import ErrorComponent from 'app/components/ErrorComponent'
 import PostItem from 'app/components/PostItem'
 import PostList from './PostList'
 
@@ -84,17 +85,16 @@ describe('scenes/PostList/PostListComponent', () => {
   })
 
   it('should render the correct component when status is "error"', () => {
-    const testWith = (errMsg) => {
-      const props = { status: 'error', error: new Error(errMsg) }
+    const testWith = (error) => {
+      const props = { status: 'error', error }
       const wrapper = setup({ props })
 
       testSubComponents(wrapper, {
         'loader': 0,
         'load-more-btn': 0,
-        'error': [1, (error) => {
-          error.dive().text()
-          assert.isTrue(error.is(Warning), 'error should be a <Warning /> component')
-          assert.include(error.dive().text(), errMsg, 'error should render error message')
+        'error': [1, (errorWrapper) => {
+          assert.isTrue(errorWrapper.is(ErrorComponent), 'error should be a <ErrorComponent />')
+          assert.equal(errorWrapper.prop('error'), error, 'error should pass the error as prop')
         }],
         'no-more-post-msg': 0,
         'no-more-match-msg': 0,
@@ -103,8 +103,8 @@ describe('scenes/PostList/PostListComponent', () => {
       })
     }
 
-    testWith('some error message')
-    testWith('some other error message')
+    testWith(new Error('some error message'))
+    testWith(new Error('some other error message'))
   })
 
   it('should render the correct component when status is "no-more-post"', () => {

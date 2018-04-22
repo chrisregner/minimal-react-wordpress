@@ -917,6 +917,24 @@ describe('state/page/selectors', () => {
     })
   })
 
+  it('getPostListPage()', () => {
+    assert.equal(
+      fromPage.getPostListPage({
+        postListPage: 'foo',
+        otherStateKey: 'some other value',
+      }),
+      'foo',
+    )
+
+    assert.equal(
+      fromPage.getPostListPage({
+        postListPage: 'baz',
+        otherStateKey: 'some other value',
+      }),
+      'baz',
+    )
+  })
+
   it('getError()', () => {
     assert.equal(
       fromPage.getError({

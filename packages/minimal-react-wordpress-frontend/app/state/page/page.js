@@ -169,6 +169,7 @@ export const getError = state => state.error
 export const getStatus = state => state.status
 export const getSearchKeyword = state => state.searchKeyword
 export const getSearchTags = state => state.searchTags
+export const getPostListPage = state => state.postListPage
 
 export const getPostWithTags = ({ post, searchTags }) =>
   post && {

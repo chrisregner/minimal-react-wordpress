@@ -1,0 +1,6 @@
+{
+  "name:": "ErrorComponent",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ErrorComponent.js"
+}
