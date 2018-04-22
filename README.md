@@ -1,19 +1,3 @@
-reducer
-saga
-wp api
-components
-container
-integrate to App
-
----
-
-move ui/tag actions to common/tag??
-
----
-
-
-- custom page
-- routes?
 - 404
 - nav
 - misc
@@ -56,6 +40,9 @@ move ui/tag actions to common/tag??
     - when in page
     - when in 404
 - footer
+  - check on post list page
+  - check on post page
+  - check on custom page
 - 404
 
 # optional features

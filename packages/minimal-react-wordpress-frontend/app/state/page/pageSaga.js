@@ -5,6 +5,7 @@ import {
   FETCH_POST_LIST,
   FETCH_MORE_POST_LIST,
   FETCH_POST,
+  FETCH_PAGE,
   SET_SEARCH_KEYWORD,
   FETCH_SEARCH_TAGS,
   TOGGLE_SEARCH_TAG,
@@ -14,6 +15,7 @@ import {
 import {
   fetchPost as apiFetchPost,
   fetchPostList as apiFetchPostList,
+  fetchPage as apiFetchPage,
   fetchTags as apiFetchTags,
 } from 'app/api/wpapi'
 
@@ -21,6 +23,7 @@ import {
   setError,
   addPostList,
   setPost,
+  setPage,
   setSearchTags,
 } from './page'
 
@@ -54,12 +57,24 @@ export function * fetchPostList (action) {
   }
 }
 
-export function * fetchPost ({ payload }) {
+export function * fetchPost ({ payload: postId }) {
   try {
-    const { data } = yield call(apiFetchPost, payload)
+    const { data } = yield call(apiFetchPost, postId)
     const post = simplifyPostItem(data)
 
     yield put(setPost(post))
+  } catch (e) {
+    yield put(setError(e))
+    console.error(e)
+  }
+}
+
+export function * fetchPage ({ payload: pageId }) {
+  try {
+    const { data } = yield call(apiFetchPage, pageId)
+    const page = simplifyPostItem(data)
+
+    yield put(setPage(page))
   } catch (e) {
     yield put(setError(e))
     console.error(e)
@@ -139,4 +154,8 @@ export default function * pageSaga () {
   yield takeLatest([
     FETCH_SEARCH_TAGS,
   ], fetchTags)
+
+  yield takeLatest([
+    FETCH_PAGE,
+  ], fetchPage)
 }

@@ -18,6 +18,9 @@ import {
   /* Post Page Actions */
   FETCH_POST,
   SET_POST,
+  /* Post Page Actions */
+  FETCH_PAGE,
+  SET_PAGE,
 } from 'app/state/actionTypes'
 
 /**
@@ -36,7 +39,7 @@ const pageReducer = handleActions({
   [RESET_PAGE]: ({ ...state }) => ({
     ...state,
     postList: [],
-    page: 1,
+    postListPage: 1,
     status: 'loading',
   }),
 
@@ -47,22 +50,22 @@ const pageReducer = handleActions({
   }),
 
   /* Post List Actions */
-  [FETCH_MORE_POST_LIST]: ({ page, ...state }) => ({
+  [FETCH_MORE_POST_LIST]: ({ postListPage, ...state }) => ({
     ...state,
-    page: page + 1,
+    postListPage: postListPage + 1,
     status: 'loading',
   }),
 
-  [ADD_POST_LIST]: ({ postList, page, ...state }, { payload }) => ({
-    ...state, page,
+  [ADD_POST_LIST]: ({ postList, postListPage, ...state }, { payload }) => ({
+    ...state, postListPage,
     postList: (postList || []).concat(payload.postList),
     status: (() => {
       const { totalPages } = payload
       const hasSearchParam = getHasFilter(state)
 
-      if (totalPages > 0 && page < totalPages) return 'can-load'
-      if (totalPages > 0 && page === totalPages && hasSearchParam) return 'no-more-match'
-      if (totalPages > 0 && page === totalPages && !hasSearchParam) return 'no-more-post'
+      if (totalPages > 0 && postListPage < totalPages) return 'can-load'
+      if (totalPages > 0 && postListPage === totalPages && hasSearchParam) return 'no-more-match'
+      if (totalPages > 0 && postListPage === totalPages && !hasSearchParam) return 'no-more-post'
       if (totalPages === 0 && hasSearchParam) return 'no-match'
       if (totalPages === 0 && !hasSearchParam) return 'no-post'
     })(),
@@ -115,6 +118,19 @@ const pageReducer = handleActions({
     status: 'loaded-post',
     post: payload,
   }),
+
+  /* Custom Page Actions */
+  [FETCH_PAGE]: state => ({
+    ...state,
+    status: 'loading',
+    page: null,
+  }),
+
+  [SET_PAGE]: (state, { payload }) => ({
+    ...state,
+    status: 'loaded-page',
+    page: payload,
+  }),
 }, defaultState)
 
 /**
@@ -142,36 +158,43 @@ export const setSearchTags = createAction(SET_SEARCH_TAGS)
 export const fetchPost = createAction(FETCH_POST)
 export const setPost = createAction(SET_POST)
 
+/* Custom Page Actions */
+export const fetchPage = createAction(FETCH_PAGE)
+export const setPage = createAction(SET_PAGE)
+
 /**
  * Selectors
  */
 export const getError = state => state.error
 export const getStatus = state => state.status
-export const getPost = state => state.post
-export const getPage = state => state.page
 export const getSearchKeyword = state => state.searchKeyword
 export const getSearchTags = state => state.searchTags
 
-export const getPostWithTags = ({ post, searchTags }) => (post && post.tags)
-  ? {
+export const getPostWithTags = ({ post, searchTags }) =>
+  post && {
     ...post,
-    tags: post.tags.map(postTagId =>
+    url: `/post/${post.id}`,
+    tags: post.tags && post.tags.map(postTagId =>
       searchTags.find(searchTag => searchTag.id === postTagId)
     ),
   }
-  : post
 
 export const getPostExcerptsWithTags = ({ postList, searchTags }) =>
-  postList.map(({ tags: postTags, excerpt, ...postItem }) => {
-    const mappedPost = { ...postItem, content: excerpt }
-
-    if (postTags)
-      mappedPost.tags = postTags.map(postTagId =>
+  postList.map(post =>
+    ({
+      ...post,
+      content: post.excerpt,
+      url: `/post/${post.id}`,
+      tags: post.tags && post.tags.map(postTagId =>
         searchTags.find(searchTag => searchTag.id === postTagId)
-      )
+      ),
+    }))
 
-    return mappedPost
-  })
+export const getPage = ({ page }) =>
+  page && {
+    ...page,
+    url: `/${page.id}`,
+  }
 
 export const getActiveSearchTagsIds = state =>
   state

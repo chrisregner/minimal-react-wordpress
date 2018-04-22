@@ -34,29 +34,29 @@ describe('api/wp-api', () => {
     })
   })
 
-  describe('fetchPost()', () => {
-    it('should fetch post with correct params and return the response', () => {
-      const testWith = ({ postId, expected }) => {
+  describe('fetchPage()', () => {
+    it('should fetch page with correct params and return the response', () => {
+      const testWith = ({ pageId, expected }) => {
         const getTd = td.replace(axios, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts/' + postId,
+          'http://localhost/minimal-react-wordpress/wp-json/wp/v2/pages/' + pageId,
           { params: { _embed: 1 } },
         ]
 
         td.when(getTd(...expectedArgs))
           .thenReturn(expected)
 
-        assert.equal(fromWpApi.fetchPost(postId), expected)
+        assert.equal(fromWpApi.fetchPage(pageId), expected)
       }
 
       testWith({
-        postId: 123,
-        expected: 'some post',
+        pageId: 123,
+        expected: 'some page',
       })
 
       testWith({
-        postId: 456,
-        expected: 'some other post',
+        pageId: 456,
+        expected: 'some other page',
       })
     })
   })

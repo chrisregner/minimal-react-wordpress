@@ -14,10 +14,10 @@ import Warning from 'app/components/Warning'
 import PostItem from 'app/components/PostItem'
 import PostPage from './PostPage'
 
-describe('scenes/Post/PostPage', () => {
+describe('components/PostPage', () => {
   let setup, setupWithoutDive
   before(() => {
-    const props = { status: 'loading' }
+    const props = { status: 'loading', location: {} }
     setupWithoutDive = makeSetupComponentTest({
       Component: props =>
         <MemoryRouter>
@@ -79,7 +79,11 @@ describe('scenes/Post/PostPage', () => {
 
   it('should render next link, if any', () => {
     const testWith = (next) => {
-      const fakePost = { ...generatePostItem(), next }
+      const fakePost = {
+        ...generatePostItem(),
+        url: '',
+        next,
+      }
       const props = { post: fakePost }
       const nextLink = find(setupWithoutDive({ props, useMount: true }), 'next-link')
         .find(Link) // choose the <Link /> over <a /> (there will be two matches)
@@ -95,10 +99,14 @@ describe('scenes/Post/PostPage', () => {
 
   it('should render prev link, if any', () => {
     const testWith = (prev) => {
-      const fakePost = { ...generatePostItem(), prev }
+      const fakePost = {
+        ...generatePostItem(),
+        url: '',
+        prev,
+      }
       const props = { post: fakePost }
       const prevLink = find(setupWithoutDive({ props, useMount: true }), 'prev-link')
-        .find(Link) // choose the <Link />> over <a />> (there will be two matches)
+        .find(Link) // choose the <Link /> over <a /> (there will be two matches)
 
       assert.equal(prevLink.prop('to'), `/post/${prev.id}`)
       assert.include(prevLink.html(), prev.title)

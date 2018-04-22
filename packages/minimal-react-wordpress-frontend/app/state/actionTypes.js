@@ -19,6 +19,10 @@ export const SET_SEARCH_TAGS = 'page/SET_SEARCH_TAGS'
 export const FETCH_POST = 'page/FETCH_POST'
 export const SET_POST = 'page/SET_POST'
 
+/* Page Reducer / Post Actions */
+export const FETCH_PAGE = 'page/FETCH_PAGE'
+export const SET_PAGE = 'page/SET_PAGE'
+
 /* UI Reducer */
 export const TOGGLE_SEARCH = 'ui/TOGGLE_SEARCH'
 export const FLAG_SEARCH_ANIMATION_END = 'ui/FLAG_SEARCH_ANIMATION_END'

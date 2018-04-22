@@ -59,16 +59,16 @@ describe('components/PostList/components/PostItem', () => {
   })
 
   it('should render title with link wrapper', () => {
-    const testWith = ({ postId, title }) => {
-      const props = { id: postId, title }
+    const testWith = ({ url, title }) => {
+      const props = { url, title }
       const titleLinkWrpr = find(setup({ props }), 'title-link')
 
       assert.isTrue(titleLinkWrpr.is(Link))
-      assert.equal(titleLinkWrpr.prop('to'), `/post/${postId}`)
+      assert.equal(titleLinkWrpr.prop('to'), url)
     }
 
-    testWith({ postId: 123, title: '<div>foo</div>' })
-    testWith({ postId: 456, title: '<div>bar</div>' })
+    testWith({ url: '/link/to/foo', title: '<div>foo</div>' })
+    testWith({ url: '/link/to/bar', title: '<div>bar</div>' })
   })
 
   it('should render the sanitized content', () => {
@@ -176,16 +176,16 @@ describe('components/PostList/components/PostItem', () => {
   })
 
   it('should render read-more-link', () => {
-    const testWith = ({ postId }) => {
-      const props = { id: postId }
+    const testWith = ({ url }) => {
+      const props = { url }
       const readMoreWrpr = find(setup({ props }), 'read-more-link')
 
       assert.isTrue(readMoreWrpr.is(Link))
-      assert.equal(readMoreWrpr.prop('to'), `/post/${postId}`)
+      assert.equal(readMoreWrpr.prop('to'), url)
     }
 
-    testWith({ postId: 123 })
-    testWith({ postId: 456 })
+    testWith({ url: '/link/to/foo' })
+    testWith({ url: '/link/to/bar' })
   })
 
   it('should NOT render read-more-link when hasReadMore prop is false', () => {
@@ -201,7 +201,7 @@ describe('components/PostList/components/PostItem', () => {
   })
 
   it('should render featured media with link wrapper', () => {
-    const testWith = (postId) => {
+    const testWith = ({ url }) => {
       const featuredMedia = {
         'altText': '',
         'mediumLargeSrc': '',
@@ -209,15 +209,15 @@ describe('components/PostList/components/PostItem', () => {
         'fullSrc': '',
       }
 
-      const props = { id: postId, featuredMedia }
+      const props = { url, featuredMedia }
       const imageLinkWrpr = find(setup({ props }), 'featured-media-link')
 
       assert.isTrue(imageLinkWrpr.is(Link))
-      assert.equal(imageLinkWrpr.prop('to'), `/post/${postId}`)
+      assert.equal(imageLinkWrpr.prop('to'), url)
     }
 
-    testWith(123)
-    testWith(456)
+    testWith({ url: '/link/to/foo' })
+    testWith({ url: '/link/to/bar' })
   })
 
   it('should render a responsive featured media with alt text, if any', () => {

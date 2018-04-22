@@ -23,7 +23,7 @@ describe('state/page/reducer', () => {
         const actual = pageReducer(initState, fromPage.resetPage())
         const expected = {
           postList: [],
-          page: 1,
+          postListPage: 1,
           status: 'loading',
           otherKey: 'otherValue',
         }
@@ -34,7 +34,7 @@ describe('state/page/reducer', () => {
       testWith({})
       testWith({
         postList: ['some post'],
-        page: 2,
+        postListPage: 2,
         status: 'some-other-status',
       })
     })
@@ -54,48 +54,48 @@ describe('state/page/reducer', () => {
 
     it('should add post list to existing ones, save page, apply static changes correctly, and save other keys', () => {
       testWith({
-        initState: { page: 1 },
+        initState: { postListPage: 1 },
         payload: { postList: ['some post'], totalPages: 10 },
-        expected: { postList: ['some post'], page: 1 },
+        expected: { postList: ['some post'], postListPage: 1 },
       })
 
       testWith({
-        initState: { postList: [], page: 1 },
+        initState: { postList: [], postListPage: 1 },
         payload: { postList: ['some post'], totalPages: 10 },
-        expected: { postList: ['some post'], page: 1 },
+        expected: { postList: ['some post'], postListPage: 1 },
       })
 
       testWith({
-        initState: { postList: ['existing post'], page: 10 },
+        initState: { postList: ['existing post'], postListPage: 10 },
         payload: { postList: ['newer post'], totalPages: 10 },
-        expected: { postList: ['existing post', 'newer post'], page: 10 },
+        expected: { postList: ['existing post', 'newer post'], postListPage: 10 },
       })
     })
 
-    it('should set status to "can-load" if page is greater than zero and is less than total pages', () => {
+    it('should set status to "can-load" if postListPage is greater than zero and is less than total pages', () => {
       testWith({
-        initState: { page: 1 },
+        initState: { postListPage: 1 },
         payload: { postList: [], totalPages: 10 },
         expected: { status: 'can-load' },
       })
 
       testWith({
-        initState: { page: 5, status: 'some-other-status' },
+        initState: { postListPage: 5, status: 'some-other-status' },
         payload: { postList: [], totalPages: 20 },
         expected: { status: 'can-load' },
       })
     })
 
-    it('should set status to "no-more-post" if page is greater than zero, page is equal to total pages and there is NO any search params', () => {
+    it('should set status to "no-more-post" if postListPage is greater than zero, postListPage is equal to total pages and there is NO any search params', () => {
       testWith({
-        initState: { page: 1 },
+        initState: { postListPage: 1 },
         payload: { postList: [], totalPages: 1 },
         expected: { status: 'no-more-post' },
       })
 
       testWith({
         initState: {
-          page: 10,
+          postListPage: 10,
           searchKeyword: '',
           searchTags: [],
           status: 'some-other-status',
@@ -105,22 +105,22 @@ describe('state/page/reducer', () => {
       })
     })
 
-    it('should set status to "no-more-match" if page is greater than zero, page is equal to total pages and there is any search params', () => {
+    it('should set status to "no-more-match" if postListPage is greater than zero, postListPage is equal to total pages and there is any search params', () => {
       testWith({
-        initState: { page: 1, searchKeyword: 'some search keyword' },
+        initState: { postListPage: 1, searchKeyword: 'some search keyword' },
         payload: { postList: [], totalPages: 1 },
         expected: { status: 'no-more-match' },
       })
 
       testWith({
-        initState: { page: 10, searchTags: ['some', 'search', 'tag'] },
+        initState: { postListPage: 10, searchTags: ['some', 'search', 'tag'] },
         payload: { postList: [], totalPages: 10 },
         expected: { status: 'no-more-match' },
       })
 
       testWith({
         initState: {
-          page: 100,
+          postListPage: 100,
           searchKeyword: 'some search keyword',
           searchTags: ['some', 'search', 'tag'],
           status: 'some-other-status',
@@ -132,14 +132,14 @@ describe('state/page/reducer', () => {
 
     it('should set status to "no-post" if total pages is zero and there is NO any search params', () => {
       testWith({
-        initState: { page: 0 },
+        initState: { postListPage: 0 },
         payload: { postList: [], totalPages: 0 },
         expected: { status: 'no-post' },
       })
 
       testWith({
         initState: {
-          page: 0,
+          postListPage: 0,
           searchKeyword: '',
           searchTags: [],
           status: 'some-other-status',
@@ -151,20 +151,20 @@ describe('state/page/reducer', () => {
 
     it('should set status to "no-match" if total pages is zero and there is any search params', () => {
       testWith({
-        initState: { page: 0, searchKeyword: 'some search keyword' },
+        initState: { postListPage: 0, searchKeyword: 'some search keyword' },
         payload: { postList: [], totalPages: 0 },
         expected: { status: 'no-match' },
       })
 
       testWith({
-        initState: { page: 0, searchTags: ['some', 'search', 'tag'] },
+        initState: { postListPage: 0, searchTags: ['some', 'search', 'tag'] },
         payload: { postList: [], totalPages: 0 },
         expected: { status: 'no-match' },
       })
 
       testWith({
         initState: {
-          page: 0,
+          postListPage: 0,
           searchKeyword: 'some search keyword',
           searchTags: ['some', 'search', 'tag'],
           status: 'some-other-status',
@@ -222,7 +222,7 @@ describe('state/page/reducer', () => {
   })
 
   describe('FETCH_MORE_POST_LIST', () => {
-    it('should increment the page, apply static changes correctly, and save other keys', () => {
+    it('should increment the postListPage, apply static changes correctly, and save other keys', () => {
       const testWith = ({ initState: passedInitState, expected: passedExpected }) => {
         const initState = { ...passedInitState, otherKey: 'otherValue' }
         const actual = pageReducer(initState, fromPage.fetchMorePostList())
@@ -231,13 +231,13 @@ describe('state/page/reducer', () => {
       }
 
       testWith({
-        initState: { page: 1 },
-        expected: { page: 2, status: 'loading' },
+        initState: { postListPage: 1 },
+        expected: { postListPage: 2, status: 'loading' },
       })
 
       testWith({
-        initState: { page: 10, status: 'some-other-status' },
-        expected: { page: 11, status: 'loading' },
+        initState: { postListPage: 10, status: 'some-other-status' },
+        expected: { postListPage: 11, status: 'loading' },
       })
     })
   })
@@ -583,19 +583,81 @@ describe('state/page/reducer', () => {
       })
     })
   })
+
+  /* Custom Page Actions */
+  describe('FETCH_PAGE', () => {
+    it('should reset page and status, and copy other keys', () => {
+      const testWith = ({ initState: passedInitState, expected }) => {
+        const initState = { otherKey: 'some value', ...passedInitState }
+        assert.deepInclude(
+          pageReducer(initState, fromPage.fetchPage()),
+          {
+            page: null,
+            status: 'loading',
+            otherKey: 'some value',
+          }
+        )
+      }
+
+      testWith({ initState: {} })
+      testWith({
+        initState: {
+          page: 'some old page',
+          status: 'some other status',
+        },
+      })
+    })
+  })
+
+  describe('SET_PAGE', () => {
+    it('should set page, update status, and copy other keys', () => {
+      const testWith = ({ initState: passedInitState, payload, expected }) => {
+        const initState = { otherKey: 'some value', ...passedInitState }
+        assert.deepInclude(
+          pageReducer(initState, fromPage.setPage(payload)),
+          { otherKey: 'some value', ...expected }
+        )
+      }
+
+      testWith({
+        initState: {},
+        payload: 'some page',
+        expected: {
+          page: 'some page',
+          status: 'loaded-page',
+        },
+      })
+
+      testWith({
+        initState: {
+          page: 'some old page',
+          status: 'some other status',
+        },
+        payload: 'some other page',
+        expected: {
+          page: 'some other page',
+          status: 'loaded-page',
+        },
+      })
+    })
+  })
 })
 
 describe('state/page/selectors', () => {
   describe('getPostExcerptsWithTags()', () => {
     it('should get the post and map the excerpt to content', () => {
-      const testWith = ({ initState, expected }) => {
-        assert.deepEqual(
-          fromPage.getPostExcerptsWithTags({
-            ...initState,
-            otherKey: 'some other value',
-          }),
-          expected,
-        )
+      const testWith = ({ initState: passedInitState, expected }) => {
+        const initState = {
+          ...passedInitState,
+          otherStateKey: 'some other value',
+        }
+
+        fromPage.getPostExcerptsWithTags(initState).forEach((page, i) => {
+          assert.deepInclude(
+            page,
+            expected[i],
+          )
+        })
       }
 
       testWith({
@@ -662,15 +724,53 @@ describe('state/page/selectors', () => {
       })
     })
 
+    it('should add url based on id', () => {
+      const testWith = ({ initState, expected }) => {
+        fromPage.getPostExcerptsWithTags(initState).forEach((page, i) => {
+          assert.deepInclude(
+            page,
+            expected[i],
+          )
+        })
+      }
+
+      testWith({
+        initState: {
+          postList: [
+            { id: 123 },
+            { id: 456 },
+            { id: 789 },
+          ],
+        },
+        expected: [
+          { id: 123, url: '/post/123' },
+          { id: 456, url: '/post/456' },
+          { id: 789, url: '/post/789' },
+        ],
+      })
+
+      testWith({
+        initState: {
+          postList: [
+            { id: 123 },
+            { id: 456 },
+          ],
+        },
+        expected: [
+          { id: 123, url: '/post/123' },
+          { id: 456, url: '/post/456' },
+        ],
+      })
+    })
+
     it('should also get the tags of the posts if any', () => {
       const testWith = ({ initState, expected }) => {
-        assert.deepEqual(
-          fromPage.getPostExcerptsWithTags({
-            ...initState,
-            otherKey: 'some other value',
-          }),
-          expected,
-        )
+        fromPage.getPostExcerptsWithTags(initState).forEach((page, i) => {
+          assert.deepInclude(
+            page,
+            expected[i],
+          )
+        })
       }
 
       testWith({
@@ -730,23 +830,33 @@ describe('state/page/selectors', () => {
   })
 
   describe('getPostWithTags()', () => {
-    it('should just get the posts if posts have no tags', () => {
-      const testWith = ({ post }) => {
-        assert.deepEqual(
+    it('should get the post and add url based on id', () => {
+      const testWith = ({ initState, expected }) =>
+        assert.deepInclude(
           fromPage.getPostWithTags({
-            post,
-            otherKey: 'some other value',
+            ...initState,
+            otherStateKey: 'some other value',
           }),
-          post,
+          expected,
         )
-      }
 
-      testWith({ post: { title: 'some post' } })
-      testWith({ post: { title: 'some other post' } })
+      testWith({
+        initState: {
+          post: { id: 123, title: 'some post' },
+        },
+        expected: { id: 123, title: 'some post', url: '/post/123' },
+      })
+
+      testWith({
+        initState: {
+          post: { id: 456, title: 'some other post' },
+        },
+        expected: { id: 456, title: 'some other post', url: '/post/456' },
+      })
     })
 
     it('should also get the tags of the posts if any', () => {
-      assert.deepEqual(
+      assert.deepInclude(
         fromPage.getPostWithTags({
           post: { title: 'some post', tags: [1, 3] },
           searchTags: [
@@ -754,7 +864,7 @@ describe('state/page/selectors', () => {
             { id: 2, name: 'tag-two' },
             { id: 3, name: 'tag-three' },
           ],
-          otherKey: 'some other value',
+          otherStateKey: 'some other value',
         }),
         {
           title: 'some post',
@@ -765,7 +875,7 @@ describe('state/page/selectors', () => {
         },
       )
 
-      assert.deepEqual(
+      assert.deepInclude(
         fromPage.getPostWithTags({
           post: { title: 'some other post', tags: [2] },
           searchTags: [
@@ -783,11 +893,35 @@ describe('state/page/selectors', () => {
     })
   })
 
+  describe('getPage()', () => {
+    it('should get page and add url based on id', () => {
+      const testWith = ({ initState, expected }) =>
+        assert.deepEqual(
+          fromPage.getPage({ ...initState, otherStateKey: 'some other value' }),
+          expected
+        )
+
+      testWith({
+        initState: {
+          page: { id: 123, title: 'some post' },
+        },
+        expected: { id: 123, title: 'some post', url: '/123' },
+      })
+
+      testWith({
+        initState: {
+          page: { id: 456, title: 'some other post' },
+        },
+        expected: { id: 456, title: 'some other post', url: '/456' },
+      })
+    })
+  })
+
   it('getError()', () => {
     assert.equal(
       fromPage.getError({
         error: 'foo',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'foo',
     )
@@ -795,25 +929,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getError({
         error: 'baz',
-        otherKey: 'some other value',
-      }),
-      'baz',
-    )
-  })
-
-  it('getPage()', () => {
-    assert.equal(
-      fromPage.getPage({
-        page: 'foo',
-        otherKey: 'some other value',
-      }),
-      'foo',
-    )
-
-    assert.equal(
-      fromPage.getPage({
-        page: 'baz',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'baz',
     )
@@ -823,7 +939,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getSearchKeyword({
         searchKeyword: 'foo',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'foo',
     )
@@ -831,7 +947,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getSearchKeyword({
         searchKeyword: 'baz',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'baz',
     )
@@ -841,7 +957,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getSearchTags({
         searchTags: 'foo',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'foo',
     )
@@ -849,7 +965,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getSearchTags({
         searchTags: 'baz',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'baz',
     )
@@ -863,7 +979,7 @@ describe('state/page/selectors', () => {
           { id: 2, name: 'some other tag', isActive: true },
           { id: 3, name: 'another tag', isActive: true },
         ],
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       [1, 2, 3],
     )
@@ -876,7 +992,7 @@ describe('state/page/selectors', () => {
           { id: 3, name: 'another tag', isActive: false },
           { id: 4, name: 'new tag', isActive: true },
         ],
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       [2, 4],
     )
@@ -886,7 +1002,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getStatus({
         status: 'foo',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'foo',
     )
@@ -894,7 +1010,7 @@ describe('state/page/selectors', () => {
     assert.equal(
       fromPage.getStatus({
         status: 'baz',
-        otherKey: 'some other value',
+        otherStateKey: 'some other value',
       }),
       'baz',
     )

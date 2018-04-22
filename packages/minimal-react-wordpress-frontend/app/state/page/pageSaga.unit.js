@@ -185,6 +185,47 @@ describe('state/page/saga', () => {
     })
   })
 
+  describe('*fetchPage()', () => {
+    it('should fetch page with some params from payload, and put the response', () => {
+      const fakePage = tu.generateRawPostItem()
+      const fakeResponse = { data: fakePage }
+
+      return expectSaga(fromPageSaga.fetchPage, { payload: 123 })
+        .provide([
+          [call(api.fetchPage, 123), fakeResponse],
+        ])
+        .put(fromPage.setPage(simplifyPostItem(fakePage)))
+        .run()
+    })
+
+    it('should fetch page with some params from payload, and put and log any error', async () => {
+      const testWith = async ({ e, pageId }) => {
+        const logTd = td.replace(console, 'error')
+
+        td.verify(logTd(), { times: 0, ignoreExtraArgs: true })
+
+        await expectSaga(fromPageSaga.fetchPage, { payload: pageId })
+          .provide([
+            [call(api.fetchPage, pageId), throwError(e)],
+          ])
+          .put(fromPage.setError(e))
+          .run()
+
+        td.verify(logTd(e), { times: 1, ignoreExtraArgs: false })
+        td.reset()
+      }
+
+      await testWith({
+        e: new Error('some error'),
+        pageId: 123,
+      })
+      await testWith({
+        e: new Error('some other error'),
+        pageId: 456,
+      })
+    })
+  })
+
   describe('*fetchTags', () => {
     it('should call ro.subscribe() with correct args', () => {
       return expectSaga(fromPageSaga.fetchTags)

@@ -8,7 +8,6 @@ import {
 
 import { connect } from 'react-redux'
 import omit from 'ramda/src/omit'
-import SmoothScroll from 'smooth-scroll'
 
 import {
   fetchPost,
@@ -18,7 +17,8 @@ import {
 } from 'app/state/page'
 
 import { getPostWithTags, getStatus, getError } from 'app/state'
-import PostPage from './PostPage'
+import scrollToTop from 'app/utils/scrollToTop'
+import PostPage from 'app/components/PostPage'
 
 const PostPageContainer = compose(
   setDisplayName('PostPageContainer'),
@@ -72,15 +72,5 @@ const PostPageContainer = compose(
       : post,
   }))
 )(PostPage)
-
-/**
- * Internal functions
- */
-
-const scrollToTop = () => {
-  const scroll = new SmoothScroll()
-  const anchor = document.querySelector('#root')
-  scroll.animateScroll(anchor)
-}
 
 export default PostPageContainer
