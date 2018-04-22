@@ -1,6 +1,14 @@
-import { compose, lifecycle, setDisplayName, withPropsOnChange } from 'recompose'
+import {
+  compose,
+  lifecycle,
+  setDisplayName,
+  withPropsOnChange,
+  withState,
+} from 'recompose'
+
 import { connect } from 'react-redux'
 import omit from 'ramda/src/omit'
+import SmoothScroll from 'smooth-scroll'
 
 import {
   fetchPost,
@@ -10,10 +18,10 @@ import {
 } from 'app/state/page'
 
 import { getPostWithTags, getStatus, getError } from 'app/state'
-import PostWithStatus from './PostWithStatus'
+import PostPage from './PostPage'
 
-const PostContainer = compose(
-  setDisplayName('PostContainer'),
+const PostPageContainer = compose(
+  setDisplayName('PostPageContainer'),
 
   connect(
     state => ({
@@ -31,9 +39,23 @@ const PostContainer = compose(
     }),
   ),
 
+  withState('postId', 'setPostId'),
+
   lifecycle({
     componentDidMount () {
-      this.props.fetchPost(this.props.match.params.postId)
+      const postId = this.props.match.params.postId
+      this.props.fetchPost(postId)
+      this.props.setPostId(postId)
+    },
+    componentDidUpdate () {
+      const oldPostId = this.props.postId
+      const newPostId = this.props.match.params.postId
+
+      if (oldPostId !== newPostId) {
+        this.props.fetchPost(newPostId)
+        this.props.setPostId(newPostId)
+        scrollToTop()
+      }
     },
   }),
 
@@ -49,6 +71,16 @@ const PostContainer = compose(
       }
       : post,
   }))
-)(PostWithStatus)
+)(PostPage)
 
-export default PostContainer
+/**
+ * Internal functions
+ */
+
+const scrollToTop = () => {
+  const scroll = new SmoothScroll()
+  const anchor = document.querySelector('#root')
+  scroll.animateScroll(anchor)
+}
+
+export default PostPageContainer

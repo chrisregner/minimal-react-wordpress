@@ -1,10 +1,3 @@
-style wp content
-test
-lint
-commit
-
----
-
 reducer
 saga
 wp api
@@ -19,10 +12,8 @@ move ui/tag actions to common/tag??
 ---
 
 
-- post page
-- post page, prev/next posts???
 - custom page
-- routes
+- routes?
 - 404
 - nav
 - misc

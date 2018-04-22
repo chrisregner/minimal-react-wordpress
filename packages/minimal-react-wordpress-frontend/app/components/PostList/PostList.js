@@ -74,15 +74,7 @@ PostList.propTypes = {
   postList: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
   })),
-  status: PropTypes.oneOf([
-    'can-load',
-    'loading',
-    'error',
-    'no-more-match',
-    'no-more-post',
-    'no-match',
-    'no-post',
-  ]),
+  status: PropTypes.string.isRequired,
 }
 
 export default PostList

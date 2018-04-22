@@ -22,6 +22,25 @@ describe('utils/simplifyPostItem()', () => {
     assert.deepEqual(actual, expected)
   })
 
+  it('should return the posts prev and next links', () => {
+    const testWith = (prevAndNext) => {
+      const post = {
+        ...generateRawPostItem(),
+        ...prevAndNext,
+      }
+
+      const actual = simplifyPostItem(post)
+      const expected = prevAndNext
+
+      assert.deepInclude(actual, expected)
+    }
+
+    testWith({
+      next: 'some next link',
+      prev: 'some prev link',
+    })
+  })
+
   it('should return the modified date, if any, along with the post’s basic details', () => {
     const post = generateRawPostItem({ hasModifiedDate: true })
     const expected = {

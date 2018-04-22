@@ -17,6 +17,12 @@ const simplifyPostItem = (post) => {
     excerpt: post.excerpt.rendered,
   }
 
+  if (post.prev)
+    simplifiedPost.prev = post.prev
+
+  if (post.next)
+    simplifiedPost.next = post.next
+
   if (post.modified)
     simplifiedPost.modified = new Date(post.modified)
 

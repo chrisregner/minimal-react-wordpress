@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom'
 import GlobalStyles from 'app/components/GlobalStyles'
 import Header from 'app/components/Header'
 import PostList from 'app/scenes/PostList'
-import Post from 'app/scenes/Post'
+import PostPage from 'app/scenes/PostPage'
 import SearchResult from 'app/scenes/SearchResult'
 
 const App = () =>
@@ -17,7 +17,7 @@ const App = () =>
         <div className='pt4-l'>
           <Route exact path='/' component={PostList} />
           <Route path='/search' component={SearchResult} />
-          <Route path='/post/:postId' component={Post} />
+          <Route path='/post/:postId' component={PostPage} />
         </div>
       </div>
     </div>
