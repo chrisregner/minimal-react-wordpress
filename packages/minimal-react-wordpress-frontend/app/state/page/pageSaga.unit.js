@@ -6,9 +6,10 @@ import td from 'testdouble'
 import qs from 'query-string'
 import pipeP from 'ramda/src/pipeP'
 
-import { generateRawPostList, generateRawTags } from 'app/test'
+import simplifyPostItem from 'app/utils/simplifyPostItem'
 import simplifyPostList from 'app/utils/simplifyPostList'
 import simplifyTags from 'app/utils/simplifyTags'
+import * as tu from 'app/test'
 import * as api from 'app/api/wpapi'
 import * as fromState from 'app/state'
 import * as fromPage from './page'
@@ -29,7 +30,7 @@ describe('state/page/saga', () => {
     it('should fetch post list with some parameters from state and put the response', () => {
       // With page = 1, totalpages = 1
       const testVariationOne = () => {
-        const fakePosts = generateRawPostList()
+        const fakePosts = tu.generateRawPostList()
         const fakeResponse = {
           data: fakePosts,
           headers: {
@@ -42,7 +43,7 @@ describe('state/page/saga', () => {
             [select(fromState.getPage), 1],
             [select(fromState.getSearchKeyword), undefined],
             [select(fromState.getActiveSearchTagsIds), undefined],
-            [call(api.apiFetchPostList, {
+            [call(api.fetchPostList, {
               page: 1,
               search: undefined,
               tags: undefined,
@@ -57,7 +58,7 @@ describe('state/page/saga', () => {
 
       // With page = 5, totalpages = 10, some search keywords, some search tags
       const testVariationTwo = () => {
-        const fakePosts = generateRawPostList()
+        const fakePosts = tu.generateRawPostList()
         const fakeResponse = {
           data: fakePosts,
           headers: {
@@ -70,7 +71,7 @@ describe('state/page/saga', () => {
             [select(fromState.getPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
             [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
-            [call(api.apiFetchPostList, {
+            [call(api.fetchPostList, {
               page: 5,
               search: 'some search keyword',
               tags: ['some', 'search', 'tags'],
@@ -102,7 +103,7 @@ describe('state/page/saga', () => {
             [select(fromState.getPage), 1],
             [select(fromState.getSearchKeyword), undefined],
             [select(fromState.getActiveSearchTagsIds), undefined],
-            [call(api.apiFetchPostList, {
+            [call(api.fetchPostList, {
               page: 1,
               search: undefined,
               tags: undefined,
@@ -126,7 +127,7 @@ describe('state/page/saga', () => {
             [select(fromState.getPage), 5],
             [select(fromState.getSearchKeyword), 'some search keyword'],
             [select(fromState.getActiveSearchTagsIds), ['some', 'search', 'tags']],
-            [call(api.apiFetchPostList, {
+            [call(api.fetchPostList, {
               page: 5,
               search: 'some search keyword',
               tags: ['some', 'search', 'tags'],
@@ -140,6 +141,89 @@ describe('state/page/saga', () => {
 
       await testVariationOne()
       await testVariationTwo()
+    })
+  })
+
+  describe('*fetchPost()', () => {
+    it('should fetch post with some params from payload, and put the response', () => {
+      const fakePost = tu.generateRawPostItem()
+      const fakeResponse = { data: fakePost }
+
+      return expectSaga(fromPageSaga.fetchPost, { payload: 123 })
+        .provide([
+          [call(api.fetchPost, 123), fakeResponse],
+        ])
+        .put(fromPage.setPost(simplifyPostItem(fakePost)))
+        .run()
+    })
+
+    it('should fetch post with some params from payload, and put and log any error', async () => {
+      const testWith = async ({ e, postId }) => {
+        const logTd = td.replace(console, 'error')
+
+        td.verify(logTd(), { times: 0, ignoreExtraArgs: true })
+
+        await expectSaga(fromPageSaga.fetchPost, { payload: postId })
+          .provide([
+            [call(api.fetchPost, postId), throwError(e)],
+          ])
+          .put(fromPage.setError(e))
+          .run()
+
+        td.verify(logTd(e), { times: 1, ignoreExtraArgs: false })
+        td.reset()
+      }
+
+      await testWith({
+        e: new Error('some error'),
+        postId: 123,
+      })
+      await testWith({
+        e: new Error('some other error'),
+        postId: 456,
+      })
+    })
+  })
+
+  describe('*fetchTags', () => {
+    it('should call ro.subscribe() with correct args', () => {
+      return expectSaga(fromPageSaga.fetchTags)
+        .provide([
+          [call(api.fetchTags), { data: [] }],
+        ])
+        .run()
+        .then(() => {
+          td.verify(resourceObservableTd.resolveResource('tags'))
+        })
+    })
+
+    it('should fetch tags and put the response', () => {
+      const rawTags = tu.generateRawTags()
+      return expectSaga(fromPageSaga.fetchTags)
+        .provide([
+          [call(api.fetchTags), { data: rawTags }],
+        ])
+        .put(fromPage.setSearchTags(simplifyTags(rawTags)))
+        .run()
+    })
+
+    it('should fetch tags and log any error', async () => {
+      const testWith = async (error) => {
+        const consoleErrorTd = td.replace(console, 'error')
+
+        td.verify(consoleErrorTd(), { times: 0, ignoreExtraArgs: true })
+        await expectSaga(fromPageSaga.fetchTags)
+          .provide([
+            [call(api.fetchTags), throwError(error)],
+          ])
+          .run()
+
+        td.verify(consoleErrorTd(error), { times: 1 })
+        td.reset()
+      }
+
+      await testWith(new Error('some error'))
+      await testWith(new Error('some other error'))
     })
   })
 
@@ -381,52 +465,5 @@ describe('state/page/saga', () => {
       await testWith(new Error('some error'))
       await testWith(new Error('some other error'))
     })
-  })
-
-  describe('*fetchTags', () => {
-    it('should call ro.subscribe() with correct args', () => {
-      return expectSaga(fromPageSaga.fetchTags)
-        .provide([
-          [call(api.apiFetchTags), { data: [] }],
-        ])
-        .run()
-        .then(() => {
-          td.verify(resourceObservableTd.resolveResource('tags'))
-        })
-    })
-
-    it('should fetch tags and put the response', () => {
-      const rawTags = generateRawTags()
-      return expectSaga(fromPageSaga.fetchTags)
-        .provide([
-          [call(api.apiFetchTags), { data: rawTags }],
-        ])
-        .put(fromPage.setSearchTags(simplifyTags(rawTags)))
-        .run()
-    })
-
-    it('should fetch tags and log any error', async () => {
-      const testWith = async (error) => {
-        const consoleErrorTd = td.replace(console, 'error')
-
-        td.verify(consoleErrorTd(), { times: 0, ignoreExtraArgs: true })
-        await expectSaga(fromPageSaga.fetchTags)
-          .provide([
-            [call(api.apiFetchTags), throwError(error)],
-          ])
-          .run()
-
-        td.verify(consoleErrorTd(error), { times: 1 })
-        td.reset()
-      }
-
-      await testWith(new Error('some error'))
-      await testWith(new Error('some other error'))
-    })
-  })
-
-  describe('*fetchNavLinks', () => {
-    it('should fetch nav links and put the response')
-    it('should fetch nav links and log any error')
   })
 })

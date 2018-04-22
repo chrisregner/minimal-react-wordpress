@@ -41,7 +41,7 @@ const GlobalStyles = () =>
       line-height: ${lineHeightTitle};
     }
 
-    p { margin: 0 }
+    p { margin: 0; padding: 0; }
     a { color: ${colorPrimary}; text-decoration: none; }
     img { display: block; max-width: 100%; }
     pre { margin: 0 }
@@ -90,10 +90,6 @@ const GlobalStyles = () =>
       background-color: transparent;
       color: ${colorPrimary};
       font-weight: 500;
-    }
-
-    .wp-content p:not(:last-child) {
-      padding-bottom: 1rem;
     }
 
     .button-icon-primary svg { fill: ${colorMuted}; transition: fill 0.15s ease-in-out; }

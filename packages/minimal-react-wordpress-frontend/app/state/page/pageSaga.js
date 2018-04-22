@@ -4,11 +4,25 @@ import qs from 'query-string'
 import {
   FETCH_POST_LIST,
   FETCH_MORE_POST_LIST,
+  FETCH_POST,
   SET_SEARCH_KEYWORD,
-  FETCH_TAGS,
+  FETCH_SEARCH_TAGS,
   TOGGLE_SEARCH_TAG,
   CLEAR_SEARCH,
 } from 'app/state/actionTypes'
+
+import {
+  fetchPost as apiFetchPost,
+  fetchPostList as apiFetchPostList,
+  fetchTags as apiFetchTags,
+} from 'app/api/wpapi'
+
+import {
+  setError,
+  addPostList,
+  setPost,
+  setSearchTags,
+} from './page'
 
 import {
   getPage,
@@ -16,9 +30,8 @@ import {
   getActiveSearchTagsIds,
 } from 'app/state'
 
-import { addPostList, setError, setSearchTags } from './page'
-import { apiFetchPostList, apiFetchTags } from 'app/api/wpapi'
 import ro from 'app/services/resourceObservable'
+import simplifyPostItem from 'app/utils/simplifyPostItem'
 import simplifyPostList from 'app/utils/simplifyPostList'
 import simplifyTags from 'app/utils/simplifyTags'
 import history from 'app/history'
@@ -38,6 +51,30 @@ export function * fetchPostList (action) {
   } catch (e) {
     console.error(e)
     yield put(setError(e))
+  }
+}
+
+export function * fetchPost ({ payload }) {
+  try {
+    const { data } = yield call(apiFetchPost, payload)
+    const post = simplifyPostItem(data)
+
+    yield put(setPost(post))
+  } catch (e) {
+    yield put(setError(e))
+    console.error(e)
+  }
+}
+
+export function * fetchTags () {
+  try {
+    const { data } = yield call(apiFetchTags)
+    const tags = simplifyTags(data)
+
+    yield put(setSearchTags(tags))
+    ro.resolveResource('tags')
+  } catch (e) {
+    console.error(e)
   }
 }
 
@@ -83,26 +120,15 @@ export function * syncRoute () {
   }
 }
 
-export function * fetchTags () {
-  try {
-    const { data } = yield call(apiFetchTags)
-    const tags = simplifyTags(data)
-
-    yield put(setSearchTags(tags))
-    ro.resolveResource('tags')
-  } catch (e) {
-    console.error(e)
-  }
-}
-
 export default function * pageSaga () {
   yield takeLatest([
     FETCH_POST_LIST,
     FETCH_MORE_POST_LIST,
-    SET_SEARCH_KEYWORD,
-    TOGGLE_SEARCH_TAG,
-    CLEAR_SEARCH,
   ], fetchPostList)
+
+  yield takeLatest([
+    FETCH_POST,
+  ], fetchPost)
 
   yield takeLatest([
     SET_SEARCH_KEYWORD,
@@ -110,5 +136,7 @@ export default function * pageSaga () {
     CLEAR_SEARCH,
   ], syncRoute)
 
-  yield takeLatest([FETCH_TAGS], fetchTags)
+  yield takeLatest([
+    FETCH_SEARCH_TAGS,
+  ], fetchTags)
 }

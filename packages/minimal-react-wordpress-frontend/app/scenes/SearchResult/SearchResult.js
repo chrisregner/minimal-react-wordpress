@@ -2,7 +2,12 @@ import { connect } from 'react-redux'
 import { lifecycle, setDisplayName, compose } from 'recompose'
 import qs from 'query-string'
 
-import { resetPage, fetchPostList, setSearchParams } from 'app/state/page'
+import {
+  resetPage,
+  fetchPostList,
+  setSearchParams,
+  clearSearch,
+} from 'app/state/page'
 
 import history from 'app/history'
 import withPostListData from 'app/hoc/withPostListData'
@@ -11,16 +16,20 @@ import DumbPostList from 'app/components/PostList'
 
 const SearchResults = compose(
   setDisplayName('SearchResults'),
+
   connect(null, dispatch => ({
     fetchSearchResults: (searchParams) => {
       dispatch(resetPage())
       dispatch(setSearchParams(searchParams))
       dispatch(fetchPostList())
     },
+    clearSearch: () => dispatch(clearSearch()),
   })),
+
   withPostListData,
+
   lifecycle({
-    componentDidMount: async function () {
+    async componentDidMount () {
       const { search } = history.getLocation()
       const { keyword, tags } = qs.parse(search)
       const searchParams = { searchKeyword: keyword }
@@ -34,6 +43,9 @@ const SearchResults = compose(
           searchParams.searchTags = tags.map(Number)
 
       this.props.fetchSearchResults(searchParams)
+    },
+    componentWillUnmount () {
+      this.props.clearSearch()
     },
   }),
 )(DumbPostList)

@@ -11,7 +11,7 @@ import {
 } from 'app/state/page'
 
 import {
-  getPostListWithTags,
+  getPostExcerptsWithTags,
   getError,
   getStatus,
 } from 'app/state'
@@ -20,7 +20,7 @@ const withPostListData = compose(
   // Get necessary data and actions from redux
   connect(
     state => ({
-      postList: getPostListWithTags(state),
+      postList: getPostExcerptsWithTags(state),
       error: getError(state),
       status: getStatus(state),
     }),
@@ -42,7 +42,7 @@ const withPostListData = compose(
   ),
 
   // Map toggleTag() action to each tag in each posts
-  withPropsOnChange(['postList', 'tags'], ({ postList, tags, toggleTag }) => ({
+  withPropsOnChange(['postList'], ({ postList, toggleTag }) => ({
     postList: postList.map(post => post.tags
       ? {
         ...post,

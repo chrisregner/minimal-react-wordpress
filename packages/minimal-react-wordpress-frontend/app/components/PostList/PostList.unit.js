@@ -8,7 +8,9 @@ import {
   testSubComponents,
   findTestComponent as find,
 } from 'app/test'
-import PostItem from './components/PostItem'
+
+import Warning from 'app/components/Warning'
+import PostItem from 'app/components/PostItem'
 import PostList from './PostList'
 
 describe('scenes/PostList/PostListComponent', () => {
@@ -17,10 +19,13 @@ describe('scenes/PostList/PostListComponent', () => {
   before(() => {
     loadMoreTd = td.func()
     clearSearchTd = td.func()
-    setup = makeSetupComponentTest({
+
+    const setupWithoutDive = makeSetupComponentTest({
       Component: PostList,
       props: { loadMore: loadMoreTd, clearSearch: clearSearchTd },
     })
+
+    setup = (...args) => setupWithoutDive(...args).dive()
   })
 
   afterEach(td.reset)
@@ -87,9 +92,9 @@ describe('scenes/PostList/PostListComponent', () => {
         'loader': 0,
         'load-more-btn': 0,
         'error': [1, (error) => {
-          const actual = error.dive().text()
-          const expected = errMsg
-          assert.include(actual, expected)
+          error.dive().text()
+          assert.isTrue(error.is(Warning), 'error should be a <Warning /> component')
+          assert.include(error.dive().text(), errMsg, 'error should render error message')
         }],
         'no-more-post-msg': 0,
         'no-more-match-msg': 0,
@@ -142,7 +147,9 @@ describe('scenes/PostList/PostListComponent', () => {
       'error': 0,
       'no-more-post-msg': 0,
       'no-more-match-msg': 0,
-      'no-post-msg': 1,
+      'no-post-msg': [1, (noPostMsg) => {
+        assert.isTrue(noPostMsg.is(Warning), 'no-post-msg should be a <Warning /> component')
+      }],
       'no-match-msg': 0,
     })
   })
@@ -159,6 +166,9 @@ describe('scenes/PostList/PostListComponent', () => {
       'no-more-match-msg': 0,
       'no-post-msg': 0,
       'no-match-msg': [1, (noMatchMsg) => {
+        assert.isTrue(noMatchMsg.is(Warning), 'no-match-msg should be a <Warning /> component')
+
+        // assert that clear search is called when clear-search-btn is clicked
         const clearSearchBtn = find(noMatchMsg, 'clear-search-btn')
         td.verify(clearSearchTd(), { times: 0, ignoreExtraArgs: true })
         clearSearchBtn.simulate('click')

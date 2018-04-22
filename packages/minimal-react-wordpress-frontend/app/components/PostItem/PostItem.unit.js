@@ -40,19 +40,68 @@ describe('components/PostList/components/PostItem', () => {
     })()
   })
 
-  it('should render the excerpt', () => {
+  it('should render the title without empty tags', () => {
     (() => {
-      const props = { excerpt: '<div>foo<script>alert(0)</script></div>' }
+      const props = { title: '<div>foo<div></div></div>' }
       assert.include(
-        find(setup({ props }), 'excerpt').html(),
+        find(setup({ props }), 'title').html(),
         '<div>foo</div>'
       )
     })(); // eslint-disable-line semi
 
     (() => {
-      const props = { excerpt: '<div>bar<script>alert(0)</script></div>' }
+      const props = { title: '<div>bar<p></p></div>' }
       assert.include(
-        find(setup({ props }), 'excerpt').html(),
+        find(setup({ props }), 'title').html(),
+        '<div>bar</div>'
+      )
+    })()
+  })
+
+  it('should render title with link wrapper', () => {
+    const testWith = ({ postId, title }) => {
+      const props = { id: postId, title }
+      const titleLinkWrpr = find(setup({ props }), 'title-link')
+
+      assert.isTrue(titleLinkWrpr.is(Link))
+      assert.equal(titleLinkWrpr.prop('to'), `/post/${postId}`)
+    }
+
+    testWith({ postId: 123, title: '<div>foo</div>' })
+    testWith({ postId: 456, title: '<div>bar</div>' })
+  })
+
+  it('should render the sanitized content', () => {
+    (() => {
+      const props = { content: '<div>foo<script>alert(0)</script></div>' }
+      assert.include(
+        find(setup({ props }), 'content').html(),
+        '<div>foo</div>'
+      )
+    })(); // eslint-disable-line semi
+
+    (() => {
+      const props = { content: '<div>bar<script>alert(0)</script></div>' }
+      assert.include(
+        find(setup({ props }), 'content').html(),
+        '<div>bar</div>'
+      )
+    })()
+  })
+
+  it('should render the content without empty tags', () => {
+    (() => {
+      const props = { content: '<div>foo<div></div></div>' }
+      assert.include(
+        find(setup({ props }), 'content').html(),
+        '<div>foo</div>'
+      )
+    })(); // eslint-disable-line semi
+
+    (() => {
+      const props = { content: '<div>bar<p></p></div>' }
+      assert.include(
+        find(setup({ props }), 'content').html(),
         '<div>bar</div>'
       )
     })()
@@ -126,36 +175,49 @@ describe('components/PostList/components/PostItem', () => {
     })()
   })
 
-  it('should render 3 post links when there is featured media', () => {
-    const props = {
-      id: 123,
-      featuredMedia: {
-        altText: '',
-        fullSrc: '',
-      },
+  it('should render read-more-link', () => {
+    const testWith = ({ postId }) => {
+      const props = { id: postId }
+      const readMoreWrpr = find(setup({ props }), 'read-more-link')
+
+      assert.isTrue(readMoreWrpr.is(Link))
+      assert.equal(readMoreWrpr.prop('to'), `/post/${postId}`)
     }
 
-    const postLinks = find(setup({ props }), 'post-link')
-
-    assert.equal(postLinks.length, 3)
-    postLinks.forEach((link) => {
-      assert.equal(link.prop('to'), '/post/123')
-      assert.isTrue(link.is(Link))
-    })
+    testWith({ postId: 123 })
+    testWith({ postId: 456 })
   })
 
-  it('should render 2 post links when there is NO featured media', () => {
-    const props = {
-      id: 123,
+  it('should NOT render read-more-link when hasReadMore prop is false', () => {
+    const testWith = ({ postId }) => {
+      const props = { id: postId, hasReadMore: false }
+      const readMoreWrpr = find(setup({ props }), 'read-more-link')
+
+      assert.equal(readMoreWrpr.length, 0)
     }
 
-    const postLinks = find(setup({ props }), 'post-link')
+    testWith({ postId: 123 })
+    testWith({ postId: 456 })
+  })
 
-    assert.equal(postLinks.length, 2)
-    postLinks.forEach((link) => {
-      assert.equal(link.prop('to'), '/post/123')
-      assert.isTrue(link.is(Link))
-    })
+  it('should render featured media with link wrapper', () => {
+    const testWith = (postId) => {
+      const featuredMedia = {
+        'altText': '',
+        'mediumLargeSrc': '',
+        'largeSrc': '',
+        'fullSrc': '',
+      }
+
+      const props = { id: postId, featuredMedia }
+      const imageLinkWrpr = find(setup({ props }), 'featured-media-link')
+
+      assert.isTrue(imageLinkWrpr.is(Link))
+      assert.equal(imageLinkWrpr.prop('to'), `/post/${postId}`)
+    }
+
+    testWith(123)
+    testWith(456)
   })
 
   it('should render a responsive featured media with alt text, if any', () => {

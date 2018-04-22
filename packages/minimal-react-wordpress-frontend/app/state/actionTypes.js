@@ -1,18 +1,28 @@
-export const FETCH_POST_LIST = 'postList/FETCH_POST_LIST'
-export const RESET_PAGE = 'postList/RESET_PAGE'
-export const FETCH_MORE_POST_LIST = 'postList/FETCH_MORE_POST_LIST'
-export const SET_SEARCH_KEYWORD = 'postList/SET_SEARCH_KEYWORD'
-export const SET_SEARCH_TAGS = 'postList/SET_SEARCH_TAGS'
-export const TOGGLE_SEARCH_TAG = 'postList/TOGGLE_SEARCH_TAG'
-export const CLEAR_SEARCH = 'postList/CLEAR_SEARCH'
-export const SET_SEARCH_PARAMS = 'postList/SET_SEARCH_PARAMS'
-export const ADD_POST_LIST = 'postList/ADD_POST_LIST'
-export const SET_ERROR = 'postList/SET_ERROR'
+/* Page Reducer / Common Actions */
+export const RESET_PAGE = 'page/RESET_PAGE'
+export const SET_ERROR = 'page/SET_ERROR'
 
+/* Page Reducer / Post List Actions */
+export const FETCH_POST_LIST = 'page/FETCH_POST_LIST'
+export const FETCH_MORE_POST_LIST = 'page/FETCH_MORE_POST_LIST'
+export const ADD_POST_LIST = 'page/ADD_POST_LIST'
+
+/* Page Reducer / Search Actions */
+export const SET_SEARCH_KEYWORD = 'page/SET_SEARCH_KEYWORD'
+export const TOGGLE_SEARCH_TAG = 'page/TOGGLE_SEARCH_TAG'
+export const SET_SEARCH_PARAMS = 'page/SET_SEARCH_PARAMS'
+export const CLEAR_SEARCH = 'page/CLEAR_SEARCH'
+export const FETCH_SEARCH_TAGS = 'page/FETCH_SEARCH_TAGS'
+export const SET_SEARCH_TAGS = 'page/SET_SEARCH_TAGS'
+
+/* Page Reducer / Post Actions */
+export const FETCH_POST = 'page/FETCH_POST'
+export const SET_POST = 'page/SET_POST'
+
+/* UI Reducer */
 export const TOGGLE_SEARCH = 'ui/TOGGLE_SEARCH'
 export const FLAG_SEARCH_ANIMATION_END = 'ui/FLAG_SEARCH_ANIMATION_END'
-export const SET_TAGS = 'ui/SET_TAGS'
-export const FETCH_TAGS = 'ui/FETCH_TAGS'
 
+/* Common Reducer / Nav Actions */
 export const FETCH_NAV_LINKS = 'common/FETCH_NAV_LINKS'
 export const SET_NAV_LINKS = 'common/SET_NAV_LINKS'

@@ -1,0 +1,6 @@
+{
+  "name:": "Warning",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Warning.js"
+}

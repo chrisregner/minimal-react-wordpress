@@ -4,7 +4,7 @@ import { FETCH_NAV_LINKS } from 'app/state/actionTypes'
 
 import simplifyNavLinks from 'app/utils/simplifyNavLinks'
 import { setNavLinks } from './common'
-import { apiFetchNavLinks } from 'app/api/wpapi'
+import { fetchNavLinks as apiFetchNavLinks } from 'app/api/wpapi'
 
 export function * fetchNavLinks () {
   try {

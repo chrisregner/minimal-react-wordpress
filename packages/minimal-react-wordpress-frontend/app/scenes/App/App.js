@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom'
 import GlobalStyles from 'app/components/GlobalStyles'
 import Header from 'app/components/Header'
 import PostList from 'app/scenes/PostList'
+import Post from 'app/scenes/Post'
 import SearchResult from 'app/scenes/SearchResult'
 
 const App = () =>
@@ -14,10 +15,9 @@ const App = () =>
     <div className='fr-l pr4-l w-two-thirds-l'>
       <div className='mh3 mh4-m mh5-l min-vh-100 bg-color-secondary'>
         <div className='pt4-l'>
-
           <Route exact path='/' component={PostList} />
           <Route path='/search' component={SearchResult} />
-          {/* <Route path='/post/:postid' component={PostList} /> */}
+          <Route path='/post/:postId' component={Post} />
         </div>
       </div>
     </div>
