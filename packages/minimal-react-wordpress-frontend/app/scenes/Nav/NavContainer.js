@@ -1,48 +1,55 @@
 import { connect } from 'react-redux'
 import { matchPath } from 'react-router-dom'
-import { compose, lifecycle, withState, withProps } from 'recompose'
+import { compose, lifecycle, withState, withPropsOnChange } from 'recompose'
 
-import history from 'app/history'
-import Nav from './Nav'
 import { getNavLinks } from 'app/state'
 import { fetchNavLinks } from 'app/state/common'
-
-const isPageUrl = url =>
-  !!matchPath(url, {
-    path: '/page/:id',
-    exact: true,
-  })
-
-// TODO: not finieshed?
-const isUrlActive = ({ subjUrl, currentUrl, isNotFound }) => {
-  if (isNotFound) return false
-  if (isPageUrl(currentUrl) && subjUrl === currentUrl) return true
-  if (!isPageUrl(currentUrl) && subjUrl === '/') return true
-
-  return false
-}
+import history from 'app/history'
+import Nav from './Nav'
 
 const NavContainer = compose(
+  connect(
+    state => ({ links: getNavLinks(state) }),
+    { fetchNavLinks }
+  ),
+
   withState('currentUrl', 'setCurrentUrl'),
-  connect(state => ({
-    navLinks: getNavLinks(state),
-    // isNotFound: getIsNotFound(state),
-  }), { fetchNavLinks }),
+
   lifecycle({
     componentDidMount () {
-      this.props.fetchNavLinks()
       this.props.setCurrentUrl(history.getLocation().pathname)
+      this.props.fetchNavLinks()
 
-      history.listen((location) => {
-        if (this.props.currentUrl !== location.pathname)
-          this.props.setCurrentUrl(location.pathname)
-      })
+      history.listen(location =>
+        this.props.setCurrentUrl(location.pathname))
     },
   }),
-  withProps(({ navLinks, currentUrl }) => ({
-    navLinks: navLinks && navLinks.map(navLink =>
-      ({ ...navLink, isActive: isUrlActive({ subjUrl: navLink.url, currentUrl }) })),
+
+  withPropsOnChange(['links', 'currentUrl'], ({ links, currentUrl }) => ({
+    links: links && links.map(link =>
+      ({ ...link, isActive: isActive(link.url, currentUrl) })),
   }))
 )(Nav)
+
+const isActive = (testedUrl, currentUrl) => {
+  if (testedUrl === '/') {
+    // case 1 tested url is home
+    const matchUrl = criterionUrl =>
+      matchPath(currentUrl, {
+        path: criterionUrl,
+        exact: true,
+      })
+
+    return !!(matchUrl('/') || // case 1.1: current url is posts
+      matchUrl('/search') || // case 1.1: current url is search
+      matchUrl('/post/:postId')) // case 1.1: current url is post
+  } else if (testedUrl === currentUrl) {
+    // case 2.1: tested url is not home, and current url matches
+    return true
+  } else {
+    // case 2.2: tested url is not home, and current url does NOT matches
+    return false
+  }
+}
 
 export default NavContainer

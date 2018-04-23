@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import Warning from 'app/components/Warning'
 
 const ErrorComponent = ({ error }) => error.message.includes('404')
-  ? <div data-test='not-found'>
+  ? <div data-test='not-found' className='animated fadeIn'>
     <div className='f-6 b'>404</div>
     <div className='f4 lh-title mb5'>Apologies, what you requested doesn't exist in our website.</div>
     <div>

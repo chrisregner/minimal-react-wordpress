@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 
 import GlobalStyles from 'app/components/GlobalStyles'
 import Header from 'app/components/Header'
+import ErrorComponent from 'app/components/ErrorComponent'
 import PostList from 'app/scenes/PostList'
 import PostPage from 'app/scenes/PostPage'
 import SearchResult from 'app/scenes/SearchResult'
@@ -18,9 +19,14 @@ const App = () =>
         <div className='pt4-l'>
           <Switch>
             <Route exact path='/' component={PostList} />
-            <Route path='/search' component={SearchResult} />
-            <Route path='/post/:postId' component={PostPage} />
-            <Route path='/:pageId' component={CustomPage} />
+            <Route exact path='/search' component={SearchResult} />
+            <Route exact path='/post/:postId' component={PostPage} />
+            <Route exact path='/:pageId' component={CustomPage} />
+            <Route render={() =>
+              <div className='ph3 ph4-ns tc'>
+                <ErrorComponent error={new Error('404')} />
+              </div>
+            } />
           </Switch>
         </div>
       </div>

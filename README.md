@@ -1,8 +1,7 @@
----
 
-- nav
-- misc
-  - x browser test
+- x browser test local
+- deploy
+- browser test software(?) live
 
 ---
 

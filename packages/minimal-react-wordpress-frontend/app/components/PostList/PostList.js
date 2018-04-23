@@ -12,15 +12,13 @@ const PostList = ({ postList, loadMore, clearSearch, error, status }) =>
       const hasPost = postList && postList.length > 0
 
       return hasPost
-        ? <div className='animated fadeIn'>
-          {postList.map(postItem =>
-            <PostItem
-              key={postItem.id}
-              data-test={`post-item post-item--${postItem.id}`}
-              {...postItem}
-            />
-          )}
-        </div>
+        ? postList.map(postItem =>
+          <PostItem
+            key={postItem.id}
+            data-test={`post-item post-item--${postItem.id}`}
+            {...postItem}
+          />
+        )
         : null
     }}
 

@@ -44,7 +44,7 @@ describe('app/utils/simplifyNavLinks', () => {
       ]),
       [
         { title: 'some title', url: '/some/url/' },
-        { title: 'some other title', url: '/page/1' },
+        { title: 'some other title', url: '/1' },
       ],
     )
 
@@ -67,9 +67,9 @@ describe('app/utils/simplifyNavLinks', () => {
         },
       ]),
       [
-        { title: 'some page title', url: '/page/1' },
+        { title: 'some page title', url: '/1' },
         { title: 'some title', url: '/some/url/' },
-        { title: 'some other page title', url: '/page/2' },
+        { title: 'some other page title', url: '/2' },
       ],
     )
   })
