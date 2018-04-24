@@ -1,0 +1,11 @@
+{
+  "name": "minimal-react-wordpress-v2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/chrisregner/minimal-react-wordpress-v2.git",
+  "author": "<chrisregner.com@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "deploy": "git subtree push --prefix packages/minimal-react-wordpress-frontend/dist origin gh-pages"
+  }
+}

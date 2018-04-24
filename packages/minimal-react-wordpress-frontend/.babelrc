@@ -13,22 +13,21 @@
         "webpack-alias"
       ]
     },
-    // "production": {
-    //   "presets": [
-    //     ["env", { "modules": false }],
-    //     "react",
-    //     "react-optimize"
-    //   ],
-    //   "plugins": [
-    //     "transform-object-rest-spread",
-    //     "transform-class-properties",
-    //     "transform-object-entries",
-    //     "styled-jsx/babel",
-    //     "tailcall-optimization",
-    //     "minify-constant-folding",
-    //     "webpack-alias"
-    //   ]
-    // },
+    "production": {
+      "presets": [
+        ["env", { "modules": false }],
+        "react"
+      ],
+      "plugins": [
+        "transform-object-rest-spread",
+        "transform-class-properties",
+        "transform-object-entries",
+        "styled-jsx/babel",
+        "tailcall-optimization",
+        "minify-constant-folding",
+        "webpack-alias"
+      ]
+    },
     "test": {
       "presets": [
         "env",

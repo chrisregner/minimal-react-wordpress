@@ -1,9 +1,12 @@
 import axios from 'axios'
 
-const POST_LIST_ENDPOINT = 'http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts'
-const PAGE_ENDPOINT = 'http://localhost/minimal-react-wordpress/wp-json/wp/v2/pages'
-const TAGS_ENDPOINT = 'http://localhost/minimal-react-wordpress/wp-json/wp/v2/tags'
-const NAV_LINKS_ENDPOINT = 'http://localhost/minimal-react-wordpress/wp-json/wp-api-menus/v2/menu-locations/primary'
+const baseUrl = process.env.NODE_ENV === 'production'
+  ? 'http://minimal-react-wordpress.herokuapp.com'
+  : 'http://localhost/minimal-react-wordpress/'
+const POST_LIST_ENDPOINT = baseUrl + '/wp-json/wp/v2/posts'
+const PAGE_ENDPOINT = baseUrl + '/wp-json/wp/v2/pages'
+const TAGS_ENDPOINT = baseUrl + '/wp-json/wp/v2/tags'
+const NAV_LINKS_ENDPOINT = baseUrl + '/wp-json/wp-api-menus/v2/menu-locations/primary'
 
 export const fetchPostList = (params = {}) =>
   axios.get(POST_LIST_ENDPOINT, {

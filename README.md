@@ -1,6 +1,18 @@
 
-- x browser test local
+work on mastercard BPI card location
+deploy wp heroku
+
+---
+
+ie
+safari?
+firefox
+phone chrome
+
+---
+
 - deploy
+- x browser test local
 - browser test software(?) live
 
 ---

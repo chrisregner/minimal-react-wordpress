@@ -103,7 +103,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: resolve(__dirname, 'dist/index.html'),
       template: resolve(__dirname, 'app/index.html'),
-      inlineManifestWebpackName: 'webpackManifest',
+      // inlineManifestWebpackName: 'webpackManifest',
     }),
     ...(isProd
       ? [
@@ -111,15 +111,15 @@ module.exports = {
         new webpack.optimize.ModuleConcatenationPlugin(),
         new UglifyJsPlugin(),
         new webpack.HashedModuleIdsPlugin(),
-        new WebpackChunkHash(),
+        // new WebpackChunkHash(),
         new webpack.DefinePlugin({
           'process.env.NODE_ENV': JSON.stringify('production'),
         }),
-        new ChunkManifestPlugin({
-          filename: 'chunk-manifest.json',
-          manifestVariable: 'webpackManifest',
-          inlineManifest: true,
-        }),
+        // new ChunkManifestPlugin({
+        //   filename: 'chunk-manifest.json',
+        //   manifestVariable: 'webpackManifest',
+        //   inlineManifest: true,
+        // }),
       ]
       : []),
   ],
