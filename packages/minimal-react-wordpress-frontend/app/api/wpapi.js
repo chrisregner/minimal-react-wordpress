@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const baseUrl = process.env.NODE_ENV === 'production'
-  ? 'http://minimal-react-wordpress.herokuapp.com'
+  ? 'https://minimal-react-wordpress.herokuapp.com'
   : 'http://localhost/minimal-react-wordpress/'
 const POST_LIST_ENDPOINT = baseUrl + '/wp-json/wp/v2/posts'
 const PAGE_ENDPOINT = baseUrl + '/wp-json/wp/v2/pages'
