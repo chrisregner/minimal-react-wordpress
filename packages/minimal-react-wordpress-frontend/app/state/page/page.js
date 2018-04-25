@@ -206,9 +206,9 @@ export const getActiveSearchTagsIds = state =>
 /* Internal Functions */
 const getHasFilter = ({ searchKeyword, searchTags }) => {
   const hasKeyword = searchKeyword && searchKeyword.length
-  const hasActiveTag = searchTags
-    && searchTags.length
-    && searchTags.find(tag => tag.isActive)
+  const hasActiveTag = searchTags &&
+    searchTags.length &&
+    searchTags.find(tag => tag.isActive)
 
   return !!(hasKeyword || hasActiveTag)
 }

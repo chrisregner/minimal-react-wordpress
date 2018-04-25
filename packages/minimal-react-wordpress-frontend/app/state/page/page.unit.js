@@ -124,7 +124,7 @@ describe('state/page/reducer', () => {
           searchKeyword: 'some search keyword',
           searchTags: [
             { name: 'some-tag', isActive: true },
-            { name: 'some-other-tag', isActive: true }
+            { name: 'some-other-tag', isActive: true },
           ],
           status: 'some-other-status',
         },
@@ -171,7 +171,7 @@ describe('state/page/reducer', () => {
           searchKeyword: 'some search keyword',
           searchTags: [
             { name: 'some-tag', isActive: true },
-            { name: 'some-other-tag', isActive: true }
+            { name: 'some-other-tag', isActive: true },
           ],
           status: 'some-other-status',
         },

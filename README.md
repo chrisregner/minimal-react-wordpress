@@ -1,15 +1,3 @@
-# todo
-
-- function test
-- deploy
-- x browser test
-  - ie
-  - safari?
-  - firefox
-  - phone chrome
-
----
-
 # parts/features check list
 
 - posts

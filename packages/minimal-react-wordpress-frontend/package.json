@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --hot --mode development",
-    "prod": "del-cli dist/index.html dist/js/* --force && cross-env NODE_ENV=production webpack --mode production",
+    "build": "del-cli dist/index.html dist/js/* --force && cross-env NODE_ENV=production webpack --mode production",
+    "build:debug": "del-cli dist/index.html dist/js/* --force && cross-env NODE_ENV=production webpack --mode development",
     "mocha": "mocha --require babel-register --require setup-test.js --require babel-polyfill",
     "test": "cross-env BABEL_ENV=test yarn mocha --reporter spec --watch app/**/*.unit.js",
     "lint": "yarn lint-src && yarn lint-test",
