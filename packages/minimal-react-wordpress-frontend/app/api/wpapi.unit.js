@@ -12,7 +12,7 @@ describe('api/wp-api', () => {
       const testWith = ({ params, expected }) => {
         const getTd = td.replace(axios, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress/wp-json/wp/v2/posts',
+          'http://localhost/minimal-react-wordpress-heroku/wp-json/wp/v2/posts',
           { params: { _embed: 1, ...params } },
         ]
 
@@ -39,7 +39,7 @@ describe('api/wp-api', () => {
       const testWith = ({ pageId, expected }) => {
         const getTd = td.replace(axios, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress/wp-json/wp/v2/pages/' + pageId,
+          'http://localhost/minimal-react-wordpress-heroku/wp-json/wp/v2/pages/' + pageId,
           { params: { _embed: 1 } },
         ]
 
@@ -66,7 +66,7 @@ describe('api/wp-api', () => {
       const testWith = (response) => {
         const getTd = td.replace(axios, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress/wp-json/wp/v2/tags',
+          'http://localhost/minimal-react-wordpress-heroku/wp-json/wp/v2/tags',
           { params: { per_page: 100 } },
         ]
 
@@ -85,7 +85,7 @@ describe('api/wp-api', () => {
     it('should fetch tags with correct params and return the response', () => {
       const testWith = (response) => {
         const getTd = td.replace(axios, 'get')
-        const expectedArgs = 'http://localhost/minimal-react-wordpress/wp-json/wp-api-menus/v2/menu-locations/primary'
+        const expectedArgs = 'http://localhost/minimal-react-wordpress-heroku/wp-json/wp-api-menus/v2/menu-locations/primary'
 
         td.when(getTd(expectedArgs))
           .thenReturn(response)
