@@ -1,10 +1,6 @@
 import createHashHistory from 'history/createHashHistory'
 
-const history = createHashHistory({
-  basename: process.env.NODE_ENV === 'production'
-    ? '/minimal-react-wordpress'
-    : '/'
-})
+const history = createHashHistory()
 
 history.getLocation = () => history.location
 
