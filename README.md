@@ -1,19 +1,12 @@
+# todo
 
-work on mastercard BPI card location
-deploy wp heroku
-
----
-
-ie
-safari?
-firefox
-phone chrome
-
----
-
+- function test
 - deploy
-- x browser test local
-- browser test software(?) live
+- x browser test
+  - ie
+  - safari?
+  - firefox
+  - phone chrome
 
 ---
 
@@ -57,10 +50,6 @@ phone chrome
   - check on custom page
 - 404
 
-# optional features
-
-- place holder to be put above loaders
-
 # tools
 
 - mocha-chai-enzyme-td
@@ -71,14 +60,3 @@ phone chrome
 - wordpress
 - wp-api-post (wp plugin)
 - fakerpress (wp plugin)
-
-# misc
-
-- promise polyfill?
-
----
-
-# bug
-
-- When you go directly to search page with search url params, the search params won't be recognized by the app. They have to be inputted through the app itself
-- when fetching correct content when clearing search

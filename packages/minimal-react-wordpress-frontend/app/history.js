@@ -1,6 +1,6 @@
-import createBrowserHistory from 'history/createBrowserHistory'
+import createHashHistory from 'history/createHashHistory'
 
-const history = createBrowserHistory({
+const history = createHashHistory({
   basename: process.env.NODE_ENV === 'production'
     ? '/minimal-react-wordpress'
     : '/'

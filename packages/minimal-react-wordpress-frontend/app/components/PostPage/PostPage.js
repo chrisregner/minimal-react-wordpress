@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
+import { viewportNotSmall } from 'app/components/GlobalStyles'
 import MainSection from 'app/components/MainSection'
 import ErrorComponent from 'app/components/ErrorComponent'
 import PostItem from 'app/components/PostItem'
@@ -27,7 +28,7 @@ const PostPage = ({ post, status, error }) =>
                   <span className='underline f4 lh-title'>{post.prev.title}</span>
                 </Link>}
             </div>
-            <div className='link-wrapper fl-ns w-50-ns tr'>
+            <div className='link-wrapper fl-ns w-50-ns tr-ns'>
               {post.next &&
                 <Link
                   data-test='next-link'
@@ -40,7 +41,12 @@ const PostPage = ({ post, status, error }) =>
           </div>}
 
         <style jsx>{`
+          .link-wrapper + .link-wrapper { margin-top: 2rem; }
           .link-wrapper { min-height: 1px; }
+
+          @media ${viewportNotSmall} {
+            .link-wrapper + .link-wrapper { margin-top: 0; }
+          }
         `}</style>
       </React.Fragment>
     }
