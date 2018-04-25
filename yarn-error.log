@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js prod
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js build
 
 PATH: 
   C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Yarn\bin\;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\Chris\AppData\Local\Microsoft\WindowsApps;;C:\Program Files\Microsoft VS Code\bin;C:\Users\Chris\AppData\Roaming\npm;C:\Users\Chris\AppData\Local\Yarn\bin;C:\Program Files\heroku\bin;C:\Users\Chris\AppData\Roaming\Composer\vendor\bin
@@ -33,7 +33,7 @@ Lockfile:
   No lockfile
 
 Trace: 
-  Error: Command "prod" not found.
+  Error: Command "build" not found.
       at new MessageError (C:\Program Files (x86)\Yarn\lib\cli.js:186:110)
       at C:\Program Files (x86)\Yarn\lib\cli.js:87307:17
       at Generator.next (<anonymous>)

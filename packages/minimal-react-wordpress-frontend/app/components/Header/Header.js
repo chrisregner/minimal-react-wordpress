@@ -8,9 +8,9 @@ import Search from 'app/scenes/Search'
 
 const Header = () =>
   <header className='relative'>
-    <div className='overlapped-bg absolute zn-1 h-100 w-100 dn-l bg-color-secondary' />
+    <div className='overlapped-bg absolute top-0 z-1 h-100 w-100 dn-l bg-color-primary' />
 
-    <div className='pb3 pb0-l mb0-l pb4-l'>
+    <div className='relative z-2 pb3 pb0-l mb0-l pb4-l'>
       <Logo />
     </div>
 
@@ -20,17 +20,13 @@ const Header = () =>
 
     <Search />
 
-    <div className='search-icon-wrapper dn-l absolute top-1 right-1 color-muted'>
+    <div className='relative z-3 search-icon-wrapper dn-l absolute top-1 right-1 color-muted'>
       <ShowSearch />
     </div>
 
     <style jsx>{`
-      .overlapped-bg { top: 3rem; }
+      .overlapped-bg { height: 3rem; }
       .search-icon-wrapper { top: 4rem; }
-
-      @media ${viewportLarge} {
-        header { background-color: transparent; }
-      }
     `}</style>
   </header>
 
