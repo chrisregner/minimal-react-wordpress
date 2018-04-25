@@ -13,6 +13,8 @@ module.exports = {
   entry: isProd
     ? [
       'babel-polyfill',
+      'react',
+      'react-dom',
       './app/main.js',
     ]
     : [
