@@ -44,10 +44,6 @@
     - when in search
     - when in page
     - when in 404
-- footer
-  - check on post list page
-  - check on post page
-  - check on custom page
 - 404
 
 # tools

@@ -97,7 +97,7 @@ describe('state/page/reducer', () => {
         initState: {
           postListPage: 10,
           searchKeyword: '',
-          searchTags: [],
+          searchTags: [{ name: 'some-tag', isActive: false }],
           status: 'some-other-status',
         },
         payload: { postList: [], totalPages: 10 },
@@ -113,7 +113,7 @@ describe('state/page/reducer', () => {
       })
 
       testWith({
-        initState: { postListPage: 10, searchTags: ['some', 'search', 'tag'] },
+        initState: { postListPage: 10, searchTags: [{ name: 'some-tag', isActive: true }] },
         payload: { postList: [], totalPages: 10 },
         expected: { status: 'no-more-match' },
       })
@@ -122,7 +122,10 @@ describe('state/page/reducer', () => {
         initState: {
           postListPage: 100,
           searchKeyword: 'some search keyword',
-          searchTags: ['some', 'search', 'tag'],
+          searchTags: [
+            { name: 'some-tag', isActive: true },
+            { name: 'some-other-tag', isActive: true }
+          ],
           status: 'some-other-status',
         },
         payload: { postList: [], totalPages: 100 },
@@ -157,7 +160,7 @@ describe('state/page/reducer', () => {
       })
 
       testWith({
-        initState: { postListPage: 0, searchTags: ['some', 'search', 'tag'] },
+        initState: { postListPage: 0, searchTags: [{ name: 'some-tag', isActive: true }] },
         payload: { postList: [], totalPages: 0 },
         expected: { status: 'no-match' },
       })
@@ -166,7 +169,10 @@ describe('state/page/reducer', () => {
         initState: {
           postListPage: 0,
           searchKeyword: 'some search keyword',
-          searchTags: ['some', 'search', 'tag'],
+          searchTags: [
+            { name: 'some-tag', isActive: true },
+            { name: 'some-other-tag', isActive: true }
+          ],
           status: 'some-other-status',
         },
         payload: { postList: [], totalPages: 0 },

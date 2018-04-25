@@ -204,7 +204,13 @@ export const getActiveSearchTagsIds = state =>
     .map(tag => tag.id)
 
 /* Internal Functions */
-const getHasFilter = ({ searchKeyword, searchTags }) =>
-  !!((searchKeyword && searchKeyword.length) || (searchTags && searchTags.length))
+const getHasFilter = ({ searchKeyword, searchTags }) => {
+  const hasKeyword = searchKeyword && searchKeyword.length
+  const hasActiveTag = searchTags
+    && searchTags.length
+    && searchTags.find(tag => tag.isActive)
+
+  return !!(hasKeyword || hasActiveTag)
+}
 
 export default pageReducer
