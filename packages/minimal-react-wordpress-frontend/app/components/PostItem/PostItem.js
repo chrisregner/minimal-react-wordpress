@@ -19,7 +19,7 @@ const PostItem = ({
       <Link data-test='featured-media-link' to={url} className='db nl3 nr3 nl4-m nr4-m nl5-l nr5-l shadow-1 shadow-hover-2'>
         <img
           data-test='featured-media'
-          className='mb4'
+          className='mb4 w-100'
           sizes='100%'
           {...imageProps}
         />
