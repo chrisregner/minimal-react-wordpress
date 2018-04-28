@@ -82,6 +82,10 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
+"@types/lru-cache@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@types/lru-cache/-/lru-cache-4.1.0.tgz#ef69ce9c3ebb46bd146f0d80f0c1ce38b0508eae"
+
 "@types/node@*":
   version "9.4.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.6.tgz#d8176d864ee48753d053783e4e463aec86b8d82e"
@@ -418,7 +422,16 @@ aws4@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.6.0.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
 
-axios@^0.18.0:
+axios-extensions@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/axios-extensions/-/axios-extensions-2.0.2.tgz#02dd941fa3de1c1f28a7a5fc0c7b1e170d844ca5"
+  dependencies:
+    "@types/lru-cache" "^4.1.0"
+    axios "*"
+    babel-runtime "^6.26.0"
+    lru-cache "^4.1.1"
+
+axios@*, axios@^0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
   dependencies:

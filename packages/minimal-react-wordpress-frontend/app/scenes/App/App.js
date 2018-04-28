@@ -4,7 +4,6 @@ import { Route, Switch } from 'react-router-dom'
 import GlobalStyles, {
   bgColorSecondary,
   viewportLarge,
-  viewportMedium
 } from 'app/components/GlobalStyles'
 
 import Header from 'app/components/Header'
@@ -16,7 +15,7 @@ import CustomPage from 'app/scenes/CustomPage'
 
 const App = () =>
   <div className='wrapper cf mh3 mh4-m mh0-l min-vh-100'>
-    <div className="nl3 nr3 nl4-m nr4-m mh0-l">
+    <div className='nl3 nr3 nl4-m nr4-m mh0-l'>
       <div className='header-wrapper fixed-l mh3 mh4-m mh0-l pl4-l pt6-l pb3 pb0-l w-third-l'>
         <Header />
       </div>

@@ -70,6 +70,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "axios-extensions": "^2.0.2",
     "classnames": "^2.2.5",
     "date-fns": "^1.29.0",
     "prop-types": "^15.6.1",

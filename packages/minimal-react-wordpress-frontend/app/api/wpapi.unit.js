@@ -1,7 +1,7 @@
 import { describe, it, afterEach } from 'mocha'
 import { assert } from 'chai'
 import td from 'testdouble'
-import axios from 'axios'
+import http from './http'
 import * as fromWpApi from './wpapi'
 
 describe('api/wp-api', () => {
@@ -10,9 +10,9 @@ describe('api/wp-api', () => {
   describe('fetchPostList()', () => {
     it('should fetch post list with correct params and return the response', () => {
       const testWith = ({ params, expected }) => {
-        const getTd = td.replace(axios, 'get')
+        const getTd = td.replace(http, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress-heroku/wp-json/wp/v2/posts',
+          'wp-json/wp/v2/posts',
           { params: { _embed: 1, ...params } },
         ]
 
@@ -37,9 +37,9 @@ describe('api/wp-api', () => {
   describe('fetchPage()', () => {
     it('should fetch page with correct params and return the response', () => {
       const testWith = ({ pageId, expected }) => {
-        const getTd = td.replace(axios, 'get')
+        const getTd = td.replace(http, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress-heroku/wp-json/wp/v2/pages/' + pageId,
+          'wp-json/wp/v2/pages/' + pageId,
           { params: { _embed: 1 } },
         ]
 
@@ -64,9 +64,9 @@ describe('api/wp-api', () => {
   describe('fetchTags()', () => {
     it('should fetch tags with correct params and return the response', () => {
       const testWith = (response) => {
-        const getTd = td.replace(axios, 'get')
+        const getTd = td.replace(http, 'get')
         const expectedArgs = [
-          'http://localhost/minimal-react-wordpress-heroku/wp-json/wp/v2/tags',
+          'wp-json/wp/v2/tags',
           { params: { per_page: 100 } },
         ]
 
@@ -84,8 +84,8 @@ describe('api/wp-api', () => {
   describe('fetchNavLinks()', () => {
     it('should fetch tags with correct params and return the response', () => {
       const testWith = (response) => {
-        const getTd = td.replace(axios, 'get')
-        const expectedArgs = 'http://localhost/minimal-react-wordpress-heroku/wp-json/wp-api-menus/v2/menu-locations/primary'
+        const getTd = td.replace(http, 'get')
+        const expectedArgs = 'wp-json/wp-api-menus/v2/menu-locations/primary'
 
         td.when(getTd(expectedArgs))
           .thenReturn(response)

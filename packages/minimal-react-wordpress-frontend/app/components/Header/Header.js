@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { viewportLarge } from 'app/components/GlobalStyles'
 import Nav from 'app/scenes/Nav'
 import Logo from './components/Logo'
 import ShowSearch from 'app/scenes/ShowSearch'
