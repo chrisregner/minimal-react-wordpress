@@ -6,7 +6,7 @@ const http = axios.create({
   //   ? 'https://minimal-react-wordpress.herokuapp.com/index.php/'
   //   : 'http://localhost/minimal-react-wordpress-heroku/',
   baseURL: 'https://minimal-react-wordpress.herokuapp.com/index.php/',
-  headers: { 'Cache-Control': 'no-cache' },
+  // headers: { 'Cache-Control': 'no-cache' },
   adapter: throttleAdapterEnhancer(cacheAdapterEnhancer(axios.defaults.adapter, true)),
 })
 
